@@ -1,22 +1,13 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  statusOptions as defaultStatusOptions,
-  TAG_PALETTE,
-} from "../data/dummyData";
-
-const statusLabels = {
-  "To Do": "status.todo",
-  "In Progress": "status.inProgress",
-  Selesai: "status.done",
-};
+import { STATUS_OPTIONS, STATUS_LABELS, TAG_PALETTE } from "../constants";
 
 function FormView({
   entity,
   mode,
   item,
   courses = [],
-  statusOptions = defaultStatusOptions,
+  statusOptions = STATUS_OPTIONS,
   onSave,
   onCancel,
 }) {
@@ -153,7 +144,7 @@ function FormView({
                 >
                   {statusOptions.map((option) => (
                     <option key={option} value={option}>
-                      {t(statusLabels[option])}
+                      {t(STATUS_LABELS[option])}
                     </option>
                   ))}
                 </select>

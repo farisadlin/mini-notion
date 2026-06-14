@@ -6,13 +6,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useTranslation } from "react-i18next";
-import { statusOptions } from "../data/dummyData";
-
-const statusLabelKeys = {
-  "To Do": "kanban.todo",
-  "In Progress": "kanban.inProgress",
-  Selesai: "kanban.done",
-};
+import { STATUS_OPTIONS, STATUS_LABEL_KEYS } from "../constants";
 
 function Column({ status, children }) {
   const { t } = useTranslation();
@@ -23,7 +17,7 @@ function Column({ status, children }) {
       className={`min-h-80 rounded-lg border p-3 ${isOver ? "border-sky-400 bg-sky-400/10" : "border-slate-800 bg-slate-900/70"}`}
     >
       <h3 className="mb-3 font-semibold text-slate-100">
-        {t(statusLabelKeys[status])}
+        {t(STATUS_LABEL_KEYS[status])}
       </h3>
       {children}
     </section>
@@ -95,7 +89,7 @@ function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate, onReorder }) {
     }
 
     // Cross-column: change status
-    const targetStatus = statusOptions.includes(overId)
+    const targetStatus = STATUS_OPTIONS.includes(overId)
       ? overId
       : tasks.find((task) => task.id === overId)?.status;
     if (targetStatus && activeTask.status !== targetStatus) {
@@ -123,7 +117,7 @@ function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate, onReorder }) {
 
       <DndContext onDragEnd={handleDragEnd}>
         <div className="grid gap-4 lg:grid-cols-3">
-          {statusOptions.map((status) => {
+          {STATUS_OPTIONS.map((status) => {
             const columnTasks = tasks.filter((task) => task.status === status);
             return (
               <Column key={status} status={status}>

@@ -1,3 +1,5 @@
+import { TAG_PALETTE } from "../constants";
+
 const today = new Date();
 const isoDate = (offsetDays = 0, hours = 9) => {
   const date = new Date(today);
@@ -126,27 +128,6 @@ export const initialNotes = [
     tags: [{ name: "learning", color: "#ec4899" }],
     createdAt: isoDate(-1),
   },
-];
-
-export const entityLabels = {
-  tasks: "Tugas",
-  courses: "Mata Kuliah",
-  notes: "Catatan",
-};
-
-export const statusOptions = ["To Do", "In Progress", "Selesai"];
-
-export const TAG_PALETTE = [
-  "#38bdf8",
-  "#f43f5e",
-  "#10b981",
-  "#f59e0b",
-  "#8b5cf6",
-  "#06b6d4",
-  "#ec4899",
-  "#84cc16",
-  "#a855f7",
-  "#14b8a6",
 ];
 
 export const makeId = (prefix) =>

@@ -15,7 +15,7 @@ import {
   initialTasks,
 } from "./data/dummyData";
 
-const views = {
+const VIEWS = {
   dashboard: DashboardView,
   table: TableView,
   kanban: KanbanView,
@@ -103,7 +103,7 @@ function App() {
   }, [selectedCourseId, tasks]);
 
   const selectedCourse = courses.find((c) => c.id === selectedCourseId);
-  const ActiveView = views[activeView] || DashboardView;
+  const ActiveView = VIEWS[activeView] || DashboardView;
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
