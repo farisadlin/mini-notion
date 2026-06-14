@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { arrayMove } from "@dnd-kit/sortable";
 import { useTranslation } from "react-i18next";
 import Sidebar from "./components/Sidebar";
 import DashboardView from "./views/DashboardView";
@@ -70,6 +71,16 @@ function App() {
   function handleFormCancel() {
     setFormMeta(null);
     setActiveView(prevView);
+  }
+
+  function handleReorder(entity, activeId, overId) {
+    if (entity !== "tasks") return;
+    setTasks((items) => {
+      const oldIndex = items.findIndex((t) => t.id === activeId);
+      const newIndex = items.findIndex((t) => t.id === overId);
+      if (oldIndex === -1 || newIndex === -1) return items;
+      return arrayMove(items, oldIndex, newIndex);
+    });
   }
 
   function deleteItem(entity, id) {
@@ -161,6 +172,7 @@ function App() {
                     );
                   },
                   onDelete: deleteItem,
+                  onReorder: handleReorder,
                 })}
           />
         </div>

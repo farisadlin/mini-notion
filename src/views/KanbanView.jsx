@@ -74,17 +74,32 @@ function TaskCard({ task, course, onEdit }) {
   );
 }
 
-function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate }) {
+function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate, onReorder }) {
   const { t } = useTranslation();
 
   const handleDragEnd = ({ active, over }) => {
     if (!over) return;
-    const targetStatus = statusOptions.includes(over.id)
-      ? over.id
-      : tasks.find((task) => task.id === over.id)?.status;
-    const task = tasks.find((item) => item.id === active.id);
-    if (task && targetStatus && task.status !== targetStatus) {
-      onUpdate("tasks", task.id, { status: targetStatus });
+
+    const activeTask = tasks.find((item) => item.id === active.id);
+    if (!activeTask) return;
+
+    const overId = over.id;
+
+    // Same-column reorder: dropped onto another task card
+    const overTask = tasks.find((item) => item.id === overId);
+    if (overTask && activeTask.status === overTask.status) {
+      if (onReorder && active.id !== over.id) {
+        onReorder("tasks", active.id, over.id);
+      }
+      return;
+    }
+
+    // Cross-column: change status
+    const targetStatus = statusOptions.includes(overId)
+      ? overId
+      : tasks.find((task) => task.id === overId)?.status;
+    if (targetStatus && activeTask.status !== targetStatus) {
+      onUpdate("tasks", activeTask.id, { status: targetStatus });
     }
   };
 
