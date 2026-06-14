@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { STATUS_OPTIONS, STATUS_LABELS, TAG_PALETTE } from "../constants";
+import { STATUS_OPTIONS, STATUS_LABELS } from "../constants";
+import PropertyInput from "../components/PropertyInput";
 
 function FormView({
   entity,
@@ -23,46 +24,45 @@ function FormView({
   const [schedule, setSchedule] = useState("");
   const [location, setLocation] = useState("");
   const [tags, setTags] = useState([]);
-  const [newTagName, setNewTagName] = useState("");
 
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    if (mode === "edit" && item) {
-      setTitle(item.title || "");
-      setContent(item.content || "");
-      setStatus(item.status || "To Do");
-      setDeadline(item.deadline ? item.deadline.slice(0, 16) : "");
-      setCourseId(item.courseId || "");
-      setName(item.name || "");
-      setCredits(item.credits || "");
-      setColor(item.color || "#38bdf8");
-      setSchedule(item.schedule || "");
-      setLocation(item.location || "");
-      setTags(
-        Array.isArray(item.tags)
-          ? item.tags.map((tag) =>
-              typeof tag === "string"
-                ? { name: tag, color: TAG_PALETTE[0] }
-                : tag,
-            )
-          : [],
-      );
-      setNewTagName("");
+    const empty = () => {
+      setTitle("");
+      setContent("");
+      setStatus("To Do");
+      setDeadline("");
+      setCourseId("");
+      setName("");
+      setCredits("");
+      setColor("#38bdf8");
+      setSchedule("");
+      setLocation("");
+      setTags([]);
+    };
+
+    if (mode !== "edit" || !item) {
+      empty();
       return;
     }
 
-    setTitle("");
-    setContent("");
-    setStatus("To Do");
-    setDeadline("");
-    setCourseId("");
-    setName("");
-    setCredits("");
-    setColor("#38bdf8");
-    setSchedule("");
-    setLocation("");
-    setTags([]);
-    setNewTagName("");
+    setTitle(item.title || "");
+    setContent(item.content || "");
+    setStatus(item.status || "To Do");
+    setDeadline(item.deadline ? item.deadline.slice(0, 16) : "");
+    setCourseId(item.courseId || "");
+    setName(item.name || "");
+    setCredits(item.credits ?? "");
+    setColor(item.color || "#38bdf8");
+    setSchedule(item.schedule || "");
+    setLocation(item.location || "");
+    setTags(
+      Array.isArray(item.tags)
+        ? item.tags.map((tag) =>
+            typeof tag === "string" ? { name: tag, color: "#38bdf8" } : tag,
+          )
+        : [],
+    );
   }, [mode, item]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
@@ -99,6 +99,11 @@ function FormView({
         : t("entity.notes");
   const buttonLabel = mode === "create" ? t("modal.add") : t("modal.edit");
 
+  const statusSelectOptions = statusOptions.map((opt) => ({
+    value: opt,
+    label: t(STATUS_LABELS[opt]),
+  }));
+
   return (
     <div className="rounded-lg border border-slate-700 bg-slate-900/80 p-4">
       <div className="mb-4 flex items-center justify-between">
@@ -120,229 +125,89 @@ function FormView({
       >
         {entity === "tasks" && (
           <>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.title")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.status")}
-                </span>
-                <select
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={status}
-                  onChange={(event) => setStatus(event.target.value)}
-                >
-                  {statusOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {t(STATUS_LABELS[option])}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.deadline")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  type="datetime-local"
-                  value={deadline}
-                  onChange={(event) => setDeadline(event.target.value)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.course")}
-                </span>
-                <select
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={courseId}
-                  onChange={(event) => setCourseId(event.target.value)}
-                >
-                  <option value="">{t("modal.noCourse")}</option>
-                  {courses.map((course) => (
-                    <option key={course.id} value={course.id}>
-                      {course.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+            <PropertyInput
+              label={t("column.title")}
+              value={title}
+              onChange={setTitle}
+            />
+            <PropertyInput
+              label={t("column.status")}
+              type="select"
+              value={status}
+              onChange={setStatus}
+              options={statusSelectOptions}
+            />
+            <PropertyInput
+              label={t("column.deadline")}
+              type="date"
+              value={deadline}
+              onChange={setDeadline}
+            />
+            <PropertyInput
+              label={t("column.course")}
+              type="courseSelect"
+              value={courseId}
+              onChange={setCourseId}
+              courses={courses}
+            />
           </>
         )}
 
         {entity === "courses" && (
           <>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.name")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.credits")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  type="number"
-                  value={credits}
-                  onChange={(event) => setCredits(event.target.value)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.color")}
-                </span>
-                <input
-                  className="h-10 w-full rounded border border-slate-700 bg-slate-950 px-2"
-                  type="color"
-                  value={color}
-                  onChange={(event) => setColor(event.target.value)}
-                />
-              </label>
-            </div>
-            <div>
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.schedule")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={schedule}
-                  onChange={(event) => setSchedule(event.target.value)}
-                />
-              </label>
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.location")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={location}
-                  onChange={(event) => setLocation(event.target.value)}
-                />
-              </label>
-            </div>
+            <PropertyInput
+              label={t("column.name")}
+              value={name}
+              onChange={setName}
+            />
+            <PropertyInput
+              label={t("column.credits")}
+              type="number"
+              value={credits}
+              onChange={setCredits}
+            />
+            <PropertyInput
+              label={t("column.color")}
+              type="color"
+              value={color}
+              onChange={setColor}
+            />
+            <PropertyInput
+              label={t("column.schedule")}
+              value={schedule}
+              onChange={setSchedule}
+            />
+            <PropertyInput
+              label={t("column.location")}
+              value={location}
+              onChange={setLocation}
+              spanFull
+            />
           </>
         )}
 
         {entity === "notes" && (
           <>
-            <div className="sm:col-span-2">
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.title")}
-                </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={title}
-                  onChange={(event) => setTitle(event.target.value)}
-                />
-              </label>
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.content")}
-                </span>
-                <textarea
-                  className="min-h-24 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  value={content}
-                  onChange={(event) => setContent(event.target.value)}
-                />
-              </label>
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block space-y-1">
-                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
-                  {t("column.tags")}
-                </span>
-              </label>
-              <div className="flex gap-2">
-                <input
-                  className="flex-1 rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  placeholder="New tag name"
-                  value={newTagName}
-                  onChange={(event) => setNewTagName(event.target.value)}
-                />
-                <button
-                  className="rounded bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400"
-                  type="button"
-                  onClick={() => {
-                    if (newTagName.trim()) {
-                      setTags([
-                        ...tags,
-                        {
-                          name: newTagName.trim(),
-                          color: TAG_PALETTE[tags.length % TAG_PALETTE.length],
-                        },
-                      ]);
-                      setNewTagName("");
-                    }
-                  }}
-                >
-                  Add
-                </button>
-              </div>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
-                  <div
-                    className="flex items-center gap-1 rounded-full bg-slate-800 py-1 pl-1 pr-2"
-                    key={`${tag.name}-${index}`}
-                  >
-                    <input
-                      type="color"
-                      value={tag.color}
-                      onChange={(event) => {
-                        const newTags = [...tags];
-                        newTags[index] = {
-                          ...newTags[index],
-                          color: event.target.value,
-                        };
-                        setTags(newTags);
-                      }}
-                      className="h-5 w-5 cursor-pointer rounded-full border-0 p-0"
-                    />
-                    <span className="text-xs text-slate-200">{tag.name}</span>
-                    <button
-                      type="button"
-                      className="ml-1 text-xs text-slate-400 hover:text-red-300"
-                      onClick={() =>
-                        setTags(tags.filter((_, tagIndex) => tagIndex !== index))
-                      }
-                    >
-                      x
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <PropertyInput
+              label={t("column.title")}
+              value={title}
+              onChange={setTitle}
+              spanFull
+            />
+            <PropertyInput
+              label={t("column.content")}
+              type="textarea"
+              value={content}
+              onChange={setContent}
+              spanFull
+            />
+            <PropertyInput
+              label={t("column.tags")}
+              type="tags"
+              tags={tags}
+              onTagsChange={setTags}
+              spanFull
+            />
           </>
         )}
 
