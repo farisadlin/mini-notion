@@ -95,18 +95,11 @@ function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <Sidebar
         activeView={activeView}
-        courses={courses}
-        selectedCourseId={selectedCourseId}
         onNavigate={setActiveView}
         onQuickAdd={openCreate}
-        onSelectCourse={(courseId) => {
-          setSelectedCourseId(courseId);
-          setActiveView("table");
-        }}
-        onClearCourse={() => setSelectedCourseId(null)}
       />
 
-      <main className="min-h-screen pl-0 lg:pl-72">
+      <main className="min-h-screen">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
           {selectedCourse && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3">
