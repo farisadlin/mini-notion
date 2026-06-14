@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { arrayMove } from "@dnd-kit/sortable";
 import { useTranslation } from "react-i18next";
-import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
 import DashboardView from "./views/DashboardView";
 import TableView from "./views/TableView";
 import KanbanView from "./views/KanbanView";
@@ -107,7 +107,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
-      <Sidebar
+      <Navbar
         activeView={activeView}
         onNavigate={setActiveView}
         onQuickAdd={openCreate}

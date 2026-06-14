@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../i18n";
 import { NAV_ITEMS } from "../constants";
 
-function Sidebar({ activeView, onNavigate, onQuickAdd }) {
+function Navbar({ activeView, onNavigate, onQuickAdd }) {
   const { t } = useTranslation();
 
   return (
@@ -66,4 +66,4 @@ function Sidebar({ activeView, onNavigate, onQuickAdd }) {
   );
 }
 
-export default Sidebar;
+export default Navbar;
