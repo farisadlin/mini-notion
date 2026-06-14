@@ -1,13 +1,21 @@
 import { DndContext, useDroppable } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { useTranslation } from 'react-i18next'
 import { statusOptions } from '../data/dummyData'
 
+const statusLabelKeys = {
+  'To Do': 'kanban.todo',
+  'In Progress': 'kanban.inProgress',
+  Selesai: 'kanban.done',
+}
+
 function Column({ status, children }) {
+  const { t } = useTranslation()
   const { setNodeRef, isOver } = useDroppable({ id: status })
   return (
     <section ref={setNodeRef} className={`min-h-80 rounded-lg border p-3 ${isOver ? 'border-sky-400 bg-sky-400/10' : 'border-slate-800 bg-slate-900/70'}`}>
-      <h3 className="mb-3 font-semibold text-slate-100">{status}</h3>
+      <h3 className="mb-3 font-semibold text-slate-100">{t(statusLabelKeys[status])}</h3>
       {children}
     </section>
   )
@@ -35,6 +43,8 @@ function TaskCard({ task, course, onEdit }) {
 }
 
 function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate }) {
+  const { t } = useTranslation()
+
   const handleDragEnd = ({ active, over }) => {
     if (!over) return
     const targetStatus = statusOptions.includes(over.id) ? over.id : tasks.find((task) => task.id === over.id)?.status
@@ -48,10 +58,10 @@ function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate }) {
     <section className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-50">Kanban</h2>
-          <p className="text-sm text-slate-400">Seret tugas antar kolom workflow.</p>
+          <h2 className="text-2xl font-semibold text-slate-50">{t('kanban.title')}</h2>
+          <p className="text-sm text-slate-400">{t('kanban.subtitle')}</p>
         </div>
-        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd('tasks')}>Tambah Tugas</button>
+        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd('tasks')}>{t('kanban.addTask')}</button>
       </div>
 
       <DndContext onDragEnd={handleDragEnd}>
@@ -65,7 +75,7 @@ function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate }) {
                     {columnTasks.map((task) => (
                       <TaskCard key={task.id} task={task} course={courses.find((course) => course.id === task.courseId)} onEdit={onEdit} />
                     ))}
-                    {!columnTasks.length && <p className="rounded-md border border-dashed border-slate-700 p-3 text-sm text-slate-500">Tidak ada tugas</p>}
+                    {!columnTasks.length && <p className="rounded-md border border-dashed border-slate-700 p-3 text-sm text-slate-500">{t('kanban.noTasks')}</p>}
                   </div>
                 </SortableContext>
               </Column>

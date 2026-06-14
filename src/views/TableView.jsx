@@ -1,39 +1,42 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import PropertyInput from '../components/PropertyInput'
 
 const configs = {
   tasks: [
-    ['title', 'Judul', 'text'],
-    ['status', 'Status', 'status'],
-    ['deadline', 'Tenggat', 'date'],
-    ['courseId', 'Mata Kuliah', 'course'],
-    ['createdAt', 'Dibuat', 'readonly'],
+    ['title', 'column.title', 'text'],
+    ['status', 'column.status', 'status'],
+    ['deadline', 'column.deadline', 'date'],
+    ['courseId', 'column.courseId', 'course'],
+    ['createdAt', 'column.createdAt', 'readonly'],
   ],
   courses: [
-    ['name', 'Nama', 'text'],
-    ['credits', 'SKS', 'number'],
-    ['color', 'Warna', 'color'],
-    ['schedule', 'Jadwal', 'text'],
-    ['location', 'Lokasi', 'text'],
+    ['name', 'column.name', 'text'],
+    ['credits', 'column.credits', 'number'],
+    ['color', 'column.color', 'color'],
+    ['schedule', 'column.schedule', 'text'],
+    ['location', 'column.location', 'text'],
   ],
   notes: [
-    ['title', 'Judul', 'text'],
-    ['content', 'Isi', 'text'],
-    ['tags', 'Tag', 'text'],
-    ['createdAt', 'Dibuat', 'readonly'],
+    ['title', 'column.title', 'text'],
+    ['content', 'column.content', 'text'],
+    ['tags', 'column.tags', 'text'],
+    ['createdAt', 'column.createdAt', 'readonly'],
   ],
 }
 
-const labels = { tasks: 'Tugas', courses: 'MK', notes: 'Catatan' }
+const labelKeys = { tasks: 'entity.tasks', courses: 'entity.coursesShort', notes: 'entity.notes' }
+const addLabelKeys = { tasks: 'table.addTasks', courses: 'table.addCourses', notes: 'table.addNotes' }
 
-function displayValue(entity, key, item, courses) {
-  if (key === 'courseId') return courses.find((course) => course.id === item.courseId)?.name || 'Tanpa MK'
+function displayValue(entity, key, item, courses, t) {
+  if (key === 'courseId') return courses.find((course) => course.id === item.courseId)?.name || t('dashboard.noCourse')
   if (key === 'deadline' || key === 'createdAt') return item[key] ? new Date(item[key]).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '-'
   if (key === 'tags') return item.tags?.join(', ') || '-'
   return item[key] || '-'
 }
 
 function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete }) {
+  const { t } = useTranslation()
   const [entity, setEntity] = useState('tasks')
   const [editing, setEditing] = useState(null)
   const [draft, setDraft] = useState('')
@@ -74,19 +77,19 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
     <section className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-50">Tabel</h2>
-          <p className="text-sm text-slate-400">Edit setiap entitas langsung dari satu tabel.</p>
+          <h2 className="text-2xl font-semibold text-slate-50">{t('table.title')}</h2>
+          <p className="text-sm text-slate-400">{t('table.subtitle')}</p>
         </div>
-        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd(entity)}>Tambah {labels[entity]}</button>
+        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd(entity)}>{t(addLabelKeys[entity])}</button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex rounded-lg border border-slate-800 bg-slate-900 p-1">
-          {Object.entries(labels).map(([id, label]) => (
-            <button className={`rounded-md px-3 py-2 text-sm ${entity === id ? 'bg-slate-700 text-slate-50' : 'text-slate-400 hover:text-slate-100'}`} key={id} type="button" onClick={() => setEntity(id)}>{label}</button>
+          {Object.entries(labelKeys).map(([id, labelKey]) => (
+            <button className={`rounded-md px-3 py-2 text-sm ${entity === id ? 'bg-slate-700 text-slate-50' : 'text-slate-400 hover:text-slate-100'}`} key={id} type="button" onClick={() => setEntity(id)}>{t(labelKey)}</button>
           ))}
         </div>
-        <input className="min-w-56 flex-1 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400" value={filter} placeholder="Filter baris" onChange={(event) => setFilter(event.target.value)} />
+        <input className="min-w-56 flex-1 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400" value={filter} placeholder={t('table.filter')} onChange={(event) => setFilter(event.target.value)} />
       </div>
 
       <div className="overflow-hidden rounded-lg border border-slate-800 bg-slate-900/70">
@@ -94,12 +97,12 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead className="border-b border-slate-800 text-xs uppercase tracking-wide text-slate-500">
               <tr>
-                {configs[entity].map(([key, label]) => (
+                {configs[entity].map(([key, labelKey]) => (
                   <th className="px-4 py-3" key={key}>
-                    <button className="font-semibold hover:text-slate-200" type="button" onClick={() => toggleSort(key)}>{label}</button>
+                    <button className="font-semibold hover:text-slate-200" type="button" onClick={() => toggleSort(key)}>{t(labelKey)}</button>
                   </th>
                 ))}
-                <th className="px-4 py-3">Aksi</th>
+                <th className="px-4 py-3">{t('table.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -120,15 +123,15 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
                         >
                           {key === 'courseId' && item.courseId && <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: courses.find((course) => course.id === item.courseId)?.color }} />}
                           {key === 'color' && <span className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }} />}
-                          <span className="truncate">{displayValue(entity, key, item, courses)}</span>
+                          <span className="truncate">{displayValue(entity, key, item, courses, t)}</span>
                         </button>
                       )}
                     </td>
                   ))}
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
-                      <button className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800" type="button" onClick={() => onEdit(entity, item)}>Edit</button>
-                      <button className="rounded-md border border-red-500/50 px-2 py-1 text-xs text-red-200 hover:bg-red-500/10" type="button" onClick={() => onDelete(entity, item.id)}>Hapus</button>
+                      <button className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800" type="button" onClick={() => onEdit(entity, item)}>{t('button.edit')}</button>
+                      <button className="rounded-md border border-red-500/50 px-2 py-1 text-xs text-red-200 hover:bg-red-500/10" type="button" onClick={() => onDelete(entity, item.id)}>{t('button.delete')}</button>
                     </div>
                   </td>
                 </tr>

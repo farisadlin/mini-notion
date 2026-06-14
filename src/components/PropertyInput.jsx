@@ -1,6 +1,15 @@
+import { useTranslation } from 'react-i18next'
 import { statusOptions } from '../data/dummyData'
 
+const statusLabelKeys = {
+  'To Do': 'status.todo',
+  'In Progress': 'status.inProgress',
+  Selesai: 'status.done',
+}
+
 function PropertyInput({ type = 'text', value, onChange, courses = [], placeholder = '' }) {
+  const { t } = useTranslation()
+
   if (type === 'number') {
     return (
       <input
@@ -32,7 +41,7 @@ function PropertyInput({ type = 'text', value, onChange, courses = [], placehold
         onChange={(event) => onChange(event.target.value)}
       >
         {statusOptions.map((status) => (
-          <option key={status} value={status}>{status}</option>
+          <option key={status} value={status}>{t(statusLabelKeys[status])}</option>
         ))}
       </select>
     )
@@ -45,7 +54,7 @@ function PropertyInput({ type = 'text', value, onChange, courses = [], placehold
         value={value || ''}
         onChange={(event) => onChange(event.target.value || null)}
       >
-        <option value="">Tidak ada mata kuliah</option>
+        <option value="">{t('modal.noCourse')}</option>
         {courses.map((course) => (
           <option key={course.id} value={course.id}>{course.name}</option>
         ))}

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import Sidebar from './components/Sidebar'
 import CrudModal from './components/CrudModal'
 import DashboardView from './views/DashboardView'
@@ -17,6 +18,7 @@ const views = {
 }
 
 function App() {
+  const { t } = useTranslation()
   const [activeView, setActiveView] = useState('dashboard')
   const [selectedCourseId, setSelectedCourseId] = useState(null)
   const [tasks, setTasks] = useState(initialTasks)
@@ -51,7 +53,7 @@ function App() {
   }
 
   const deleteItem = (entity, id) => {
-    if (!window.confirm('Hapus item ini?')) return
+    if (!window.confirm(t('confirm.delete'))) return
     if (entity === 'courses') {
       setTasks((items) => items.map((task) => (task.courseId === id ? { ...task, courseId: null } : task)))
       if (selectedCourseId === id) setSelectedCourseId(null)
@@ -90,8 +92,8 @@ function App() {
               <div className="flex items-center gap-3">
                 <span className="h-3 w-3 rounded-full" style={{ backgroundColor: selectedCourse.color }} />
                 <div>
-                  <p className="text-sm font-semibold text-slate-100">Difilter oleh {selectedCourse.name}</p>
-                  <p className="text-xs text-slate-400">{filteredTasks.length} tugas terkait terlihat di semua tampilan</p>
+                  <p className="text-sm font-semibold text-slate-100">{t('filter.filteredBy', { name: selectedCourse.name })}</p>
+                  <p className="text-xs text-slate-400">{t('filter.tasksVisible', { count: filteredTasks.length })}</p>
                 </div>
               </div>
               <button
@@ -99,7 +101,7 @@ function App() {
                 type="button"
                 onClick={() => setSelectedCourseId(null)}
               >
-                Hapus filter
+                {t('button.clearFilter')}
               </button>
             </div>
           )}
