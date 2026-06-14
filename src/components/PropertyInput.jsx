@@ -1,98 +1,114 @@
-import { useTranslation } from 'react-i18next'
-import { statusOptions } from '../data/dummyData'
+import { useTranslation } from "react-i18next";
+import { statusOptions } from "../data/dummyData";
 
 const statusLabelKeys = {
-  'To Do': 'status.todo',
-  'In Progress': 'status.inProgress',
-  Selesai: 'status.done',
-}
+  "To Do": "status.todo",
+  "In Progress": "status.inProgress",
+  Selesai: "status.done",
+};
 
-function PropertyInput({ type = 'text', value, onChange, courses = [], placeholder = '' }) {
-  const { t } = useTranslation()
+function PropertyInput({
+  type = "text",
+  value,
+  onChange,
+  courses = [],
+  placeholder = "",
+}) {
+  const { t } = useTranslation();
 
-  if (type === 'number') {
+  if (type === "number") {
     return (
       <input
         className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
         type="number"
-        value={value ?? ''}
+        value={value ?? ""}
         placeholder={placeholder}
         onChange={(event) => onChange(Number(event.target.value))}
       />
-    )
+    );
   }
 
-  if (type === 'date') {
+  if (type === "date") {
     return (
       <input
         className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
         type="datetime-local"
-        value={value ? new Date(value).toISOString().slice(0, 16) : ''}
-        onChange={(event) => onChange(event.target.value ? new Date(event.target.value).toISOString() : '')}
+        value={value ? new Date(value).toISOString().slice(0, 16) : ""}
+        onChange={(event) =>
+          onChange(
+            event.target.value
+              ? new Date(event.target.value).toISOString()
+              : "",
+          )
+        }
       />
-    )
+    );
   }
 
-  if (type === 'status') {
+  if (type === "status") {
     return (
       <select
         className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-        value={value || 'To Do'}
+        value={value || "To Do"}
         onChange={(event) => onChange(event.target.value)}
       >
         {statusOptions.map((status) => (
-          <option key={status} value={status}>{t(statusLabelKeys[status])}</option>
+          <option key={status} value={status}>
+            {t(statusLabelKeys[status])}
+          </option>
         ))}
       </select>
-    )
+    );
   }
 
-  if (type === 'course') {
+  if (type === "course") {
     return (
       <select
         className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-        value={value || ''}
+        value={value || ""}
         onChange={(event) => onChange(event.target.value || null)}
       >
-        <option value="">{t('modal.noCourse')}</option>
+        <option value="">{t("modal.noCourse")}</option>
         {courses.map((course) => (
-          <option key={course.id} value={course.id}>{course.name}</option>
+          <option key={course.id} value={course.id}>
+            {course.name}
+          </option>
         ))}
       </select>
-    )
+    );
   }
 
-  if (type === 'textarea') {
+  if (type === "textarea") {
     return (
       <textarea
         className="min-h-28 w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-        value={value || ''}
+        value={value || ""}
         placeholder={placeholder}
         onChange={(event) => onChange(event.target.value)}
       />
-    )
+    );
   }
 
-  if (type === 'color') {
+  if (type === "color") {
     return (
       <input
         className="h-10 w-full rounded-md border border-slate-700 bg-slate-950 px-2 py-1"
         type="color"
-        value={value || '#38bdf8'}
+        value={value || "#38bdf8"}
         onChange={(event) => onChange(event.target.value)}
       />
-    )
+    );
   }
 
   return (
     <input
       className="w-full rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
       type="text"
-      value={Array.isArray(value) ? value.join(', ') : value || ''}
+      value={Array.isArray(value) ? value.join(", ") : value || ""}
       placeholder={placeholder}
       onChange={(event) => onChange(event.target.value)}
     />
-  )
+  );
 }
 
-export default PropertyInput
+export default PropertyInput;
