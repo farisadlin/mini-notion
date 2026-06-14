@@ -42,10 +42,11 @@ function GalleryView({ notes, onAdd, onEdit, onDelete }) {
             <div className="mt-4 flex flex-wrap gap-2">
               {note.tags.map((tag) => (
                 <span
-                  className="rounded-full bg-slate-800 px-2.5 py-1 text-xs text-sky-200"
-                  key={tag}
+                  className="rounded-full px-2.5 py-1 text-xs text-slate-100"
+                  key={tag.name || tag}
+                  style={{ backgroundColor: tag.color || "#38bdf8" }}
                 >
-                  {tag}
+                  {tag.name || tag}
                 </span>
               ))}
             </div>
@@ -98,10 +99,11 @@ function GalleryView({ notes, onAdd, onEdit, onDelete }) {
             <div className="mt-5 flex flex-wrap gap-2">
               {activeNote.tags.map((tag) => (
                 <span
-                  className="rounded-full bg-slate-800 px-2.5 py-1 text-xs text-sky-200"
-                  key={tag}
+                  className="rounded-full px-2.5 py-1 text-xs text-slate-100"
+                  key={tag.name || tag}
+                  style={{ backgroundColor: tag.color || "#38bdf8" }}
                 >
-                  {tag}
+                  {tag.name || tag}
                 </span>
               ))}
             </div>

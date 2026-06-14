@@ -6,7 +6,7 @@ function Sidebar({ activeView, onNavigate, onQuickAdd }) {
   const { t } = useTranslation();
 
   return (
-    <header className="border-b border-slate-800 bg-slate-950/95">
+    <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <h1 className="text-lg font-bold text-slate-50">
           {t("app.name")}
@@ -54,11 +54,11 @@ function Sidebar({ activeView, onNavigate, onQuickAdd }) {
             </button>
           </div>
           <button
-            className="rounded-md px-2 py-1.5 text-xs text-slate-500 hover:text-slate-300"
+            className="rounded-md px-2 py-1.5 text-base"
             type="button"
             onClick={() => i18n.changeLanguage(i18n.language === "id" ? "en" : "id")}
           >
-            {i18n.language === "id" ? "EN" : "ID"}
+            {i18n.language === "id" ? "🇮🇩" : "🇬🇧"}
           </button>
         </div>
       </div>

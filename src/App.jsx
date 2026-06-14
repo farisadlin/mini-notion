@@ -31,13 +31,16 @@ function App() {
   const [courses, setCourses] = useState(initialCourses);
   const [notes, setNotes] = useState(initialNotes);
   const [formMeta, setFormMeta] = useState(null);
+  const [prevView, setPrevView] = useState("dashboard");
 
   function openCreate(entity) {
+    setPrevView(activeView);
     setFormMeta({ entity, mode: "create", item: null });
     setActiveView("form");
   }
 
   function openEdit(entity, item) {
+    setPrevView(activeView);
     setFormMeta({ entity, mode: "edit", item });
     setActiveView("form");
   }
@@ -66,7 +69,7 @@ function App() {
 
   function handleFormCancel() {
     setFormMeta(null);
-    setActiveView("dashboard");
+    setActiveView(prevView);
   }
 
   function deleteItem(entity, id) {
@@ -99,7 +102,7 @@ function App() {
         onQuickAdd={openCreate}
       />
 
-      <main className="min-h-screen">
+      <main>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
           {selectedCourse && (
             <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3">

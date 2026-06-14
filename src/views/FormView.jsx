@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { statusOptions as defaultStatusOptions } from "../data/dummyData";
+import {
+  statusOptions as defaultStatusOptions,
+  TAG_PALETTE,
+} from "../data/dummyData";
 
 const statusLabels = {
   "To Do": "status.todo",
@@ -28,7 +31,8 @@ function FormView({
   const [color, setColor] = useState("#38bdf8");
   const [schedule, setSchedule] = useState("");
   const [location, setLocation] = useState("");
-  const [tags, setTags] = useState("");
+  const [tags, setTags] = useState([]);
+  const [newTagName, setNewTagName] = useState("");
 
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
@@ -44,8 +48,15 @@ function FormView({
       setSchedule(item.schedule || "");
       setLocation(item.location || "");
       setTags(
-        Array.isArray(item.tags) ? item.tags.join(", ") : item.tags || "",
+        Array.isArray(item.tags)
+          ? item.tags.map((tag) =>
+              typeof tag === "string"
+                ? { name: tag, color: TAG_PALETTE[0] }
+                : tag,
+            )
+          : [],
       );
+      setNewTagName("");
       return;
     }
 
@@ -59,7 +70,8 @@ function FormView({
     setColor("#38bdf8");
     setSchedule("");
     setLocation("");
-    setTags("");
+    setTags([]);
+    setNewTagName("");
   }, [mode, item]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
@@ -81,10 +93,7 @@ function FormView({
     } else if (entity === "notes") {
       values.title = title;
       values.content = content;
-      values.tags = tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean);
+      values.tags = tags;
     }
 
     onSave(entity, values);
@@ -283,13 +292,65 @@ function FormView({
                 <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
                   {t("column.tags")}
                 </span>
-                <input
-                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-                  placeholder="tag1, tag2, tag3"
-                  value={tags}
-                  onChange={(event) => setTags(event.target.value)}
-                />
               </label>
+              <div className="flex gap-2">
+                <input
+                  className="flex-1 rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  placeholder="New tag name"
+                  value={newTagName}
+                  onChange={(event) => setNewTagName(event.target.value)}
+                />
+                <button
+                  className="rounded bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400"
+                  type="button"
+                  onClick={() => {
+                    if (newTagName.trim()) {
+                      setTags([
+                        ...tags,
+                        {
+                          name: newTagName.trim(),
+                          color: TAG_PALETTE[tags.length % TAG_PALETTE.length],
+                        },
+                      ]);
+                      setNewTagName("");
+                    }
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {tags.map((tag, index) => (
+                  <div
+                    className="flex items-center gap-1 rounded-full bg-slate-800 py-1 pl-1 pr-2"
+                    key={`${tag.name}-${index}`}
+                  >
+                    <input
+                      type="color"
+                      value={tag.color}
+                      onChange={(event) => {
+                        const newTags = [...tags];
+                        newTags[index] = {
+                          ...newTags[index],
+                          color: event.target.value,
+                        };
+                        setTags(newTags);
+                      }}
+                      className="h-5 w-5 cursor-pointer rounded-full border-0 p-0"
+                    />
+                    <span className="text-xs text-slate-200">{tag.name}</span>
+                    <button
+                      type="button"
+                      className="ml-1 text-xs text-slate-400 hover:text-red-300"
+                      onClick={() =>
+                        setTags(tags.filter((_, tagIndex) => tagIndex !== index))
+                      }
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
           </>
         )}

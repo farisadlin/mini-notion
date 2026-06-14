@@ -133,7 +133,7 @@ function CalendarView({ tasks, courses, onEdit }) {
 
               return (
                 <button
-                  className={`min-h-24 border-b border-r border-slate-800 p-2 text-left transition hover:bg-slate-800/70 ${
+                  className={`min-h-14 border-b border-r border-slate-800 p-1.5 text-left transition hover:bg-slate-800/70 ${
                     cell.isCurrentMonth
                       ? "bg-slate-900/40"
                       : "bg-slate-950/70 text-slate-600"

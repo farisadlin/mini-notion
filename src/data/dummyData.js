@@ -90,7 +90,10 @@ export const initialNotes = [
     title: "Exam prep checklist",
     content:
       "Prioritize weak chapters, rewrite flashcards, and schedule one focused review block before each quiz.",
-    tags: ["study", "exam"],
+    tags: [
+      { name: "study", color: "#38bdf8" },
+      { name: "exam", color: "#f43f5e" },
+    ],
     createdAt: isoDate(-6),
   },
   {
@@ -98,7 +101,10 @@ export const initialNotes = [
     title: "Design references",
     content:
       "Collect clean dashboard examples with compact tables, calm charts, and clear empty states for portfolio inspiration.",
-    tags: ["design", "portfolio"],
+    tags: [
+      { name: "design", color: "#10b981" },
+      { name: "portfolio", color: "#8b5cf6" },
+    ],
     createdAt: isoDate(-4),
   },
   {
@@ -106,7 +112,10 @@ export const initialNotes = [
     title: "Meeting recap",
     content:
       "Team agreed to divide research synthesis by topic and review the final slide narrative before Thursday.",
-    tags: ["team", "project"],
+    tags: [
+      { name: "team", color: "#06b6d4" },
+      { name: "project", color: "#f59e0b" },
+    ],
     createdAt: isoDate(-2),
   },
   {
@@ -114,7 +123,7 @@ export const initialNotes = [
     title: "Reading notes",
     content:
       "Active recall beats rereading. Convert highlights into questions and revisit them using spaced repetition.",
-    tags: ["learning"],
+    tags: [{ name: "learning", color: "#ec4899" }],
     createdAt: isoDate(-1),
   },
 ];
@@ -126,6 +135,19 @@ export const entityLabels = {
 };
 
 export const statusOptions = ["To Do", "In Progress", "Selesai"];
+
+export const TAG_PALETTE = [
+  "#38bdf8",
+  "#f43f5e",
+  "#10b981",
+  "#f59e0b",
+  "#8b5cf6",
+  "#06b6d4",
+  "#ec4899",
+  "#84cc16",
+  "#a855f7",
+  "#14b8a6",
+];
 
 export const makeId = (prefix) =>
   `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -160,8 +182,11 @@ export const createEntity = (entity, values) => {
       ? values.tags
       : String(values.tags || "")
           .split(",")
-          .map((tag) => tag.trim())
-          .filter(Boolean),
+          .map((tag, index) => ({
+            name: tag.trim(),
+            color: TAG_PALETTE[index % TAG_PALETTE.length],
+          }))
+          .filter((tag) => tag.name),
     createdAt: now,
   };
 };
