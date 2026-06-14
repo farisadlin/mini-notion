@@ -43,7 +43,9 @@ function FormView({
       setColor(item.color || "#38bdf8");
       setSchedule(item.schedule || "");
       setLocation(item.location || "");
-      setTags(Array.isArray(item.tags) ? item.tags.join(", ") : item.tags || "");
+      setTags(
+        Array.isArray(item.tags) ? item.tags.join(", ") : item.tags || "",
+      );
       return;
     }
 
@@ -112,107 +114,187 @@ function FormView({
         </button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2"
+      >
         {entity === "tasks" && (
           <>
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder={t("column.title")}
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-            />
-            <select
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              value={status}
-              onChange={(event) => setStatus(event.target.value)}
-            >
-              {statusOptions.map((option) => (
-                <option key={option} value={option}>
-                  {t(statusLabels[option])}
-                </option>
-              ))}
-            </select>
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              type="datetime-local"
-              value={deadline}
-              onChange={(event) => setDeadline(event.target.value)}
-            />
-            <select
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              value={courseId}
-              onChange={(event) => setCourseId(event.target.value)}
-            >
-              <option value="">{t("modal.noCourse")}</option>
-              {courses.map((course) => (
-                <option key={course.id} value={course.id}>
-                  {course.name}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.title")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.status")}
+                </span>
+                <select
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={status}
+                  onChange={(event) => setStatus(event.target.value)}
+                >
+                  {statusOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {t(statusLabels[option])}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.deadline")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  type="datetime-local"
+                  value={deadline}
+                  onChange={(event) => setDeadline(event.target.value)}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.course")}
+                </span>
+                <select
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={courseId}
+                  onChange={(event) => setCourseId(event.target.value)}
+                >
+                  <option value="">{t("modal.noCourse")}</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={course.id}>
+                      {course.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
           </>
         )}
 
         {entity === "courses" && (
           <>
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder={t("column.name")}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-            />
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              type="number"
-              placeholder={t("column.credits")}
-              value={credits}
-              onChange={(event) => setCredits(event.target.value)}
-            />
-            <input
-              className="h-10 w-full rounded border border-slate-700 bg-slate-950 px-2"
-              type="color"
-              value={color}
-              onChange={(event) => setColor(event.target.value)}
-            />
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder={t("column.schedule")}
-              value={schedule}
-              onChange={(event) => setSchedule(event.target.value)}
-            />
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder={t("column.location")}
-              value={location}
-              onChange={(event) => setLocation(event.target.value)}
-            />
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.name")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.credits")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  type="number"
+                  value={credits}
+                  onChange={(event) => setCredits(event.target.value)}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.color")}
+                </span>
+                <input
+                  className="h-10 w-full rounded border border-slate-700 bg-slate-950 px-2"
+                  type="color"
+                  value={color}
+                  onChange={(event) => setColor(event.target.value)}
+                />
+              </label>
+            </div>
+            <div>
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.schedule")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={schedule}
+                  onChange={(event) => setSchedule(event.target.value)}
+                />
+              </label>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.location")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={location}
+                  onChange={(event) => setLocation(event.target.value)}
+                />
+              </label>
+            </div>
           </>
         )}
 
         {entity === "notes" && (
           <>
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder={t("column.title")}
-              value={title}
-              onChange={(event) => setTitle(event.target.value)}
-            />
-            <textarea
-              className="min-h-24 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder={t("column.content")}
-              value={content}
-              onChange={(event) => setContent(event.target.value)}
-            />
-            <input
-              className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
-              placeholder="tag1, tag2, tag3"
-              value={tags}
-              onChange={(event) => setTags(event.target.value)}
-            />
+            <div className="sm:col-span-2">
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.title")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={title}
+                  onChange={(event) => setTitle(event.target.value)}
+                />
+              </label>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.content")}
+                </span>
+                <textarea
+                  className="min-h-24 w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  value={content}
+                  onChange={(event) => setContent(event.target.value)}
+                />
+              </label>
+            </div>
+            <div className="sm:col-span-2">
+              <label className="block space-y-1">
+                <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  {t("column.tags")}
+                </span>
+                <input
+                  className="w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400"
+                  placeholder="tag1, tag2, tag3"
+                  value={tags}
+                  onChange={(event) => setTags(event.target.value)}
+                />
+              </label>
+            </div>
           </>
         )}
 
-        <div className="flex gap-2 pt-1">
+        <div className="flex gap-2 pt-1 sm:col-span-2">
           <button
             className="rounded bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400"
             type="submit"
