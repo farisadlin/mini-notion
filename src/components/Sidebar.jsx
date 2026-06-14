@@ -1,9 +1,9 @@
 const navItems = [
-  ['dashboard', 'Dashboard'],
-  ['table', 'Table'],
+  ['dashboard', 'Dasbor'],
+  ['table', 'Tabel'],
   ['kanban', 'Kanban'],
-  ['calendar', 'Calendar'],
-  ['gallery', 'Gallery'],
+  ['calendar', 'Kalender'],
+  ['gallery', 'Galeri'],
 ]
 
 function Sidebar({ activeView, courses, selectedCourseId, onNavigate, onQuickAdd, onSelectCourse, onClearCourse }) {
@@ -12,7 +12,7 @@ function Sidebar({ activeView, courses, selectedCourseId, onNavigate, onQuickAdd
       <div className="flex h-full flex-col gap-5 px-4 py-5">
         <div>
           <h1 className="text-xl font-bold text-slate-50">Mini Notion</h1>
-          <p className="mt-1 text-sm text-slate-400">Productivity workspace</p>
+          <p className="mt-1 text-sm text-slate-400">Ruang kerja produktivitas</p>
         </div>
 
         <nav className="grid grid-cols-2 gap-2 lg:grid-cols-1">
@@ -29,11 +29,11 @@ function Sidebar({ activeView, courses, selectedCourseId, onNavigate, onQuickAdd
         </nav>
 
         <div className="space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick add</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tambah Cepat</p>
           <div className="grid grid-cols-3 gap-2 lg:grid-cols-1">
-            <button className="rounded-md bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onQuickAdd('tasks')}>Task</button>
-            <button className="rounded-md bg-emerald-400 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-300" type="button" onClick={() => onQuickAdd('courses')}>Course</button>
-            <button className="rounded-md bg-violet-400 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-violet-300" type="button" onClick={() => onQuickAdd('notes')}>Note</button>
+            <button className="rounded-md bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onQuickAdd('tasks')}>Tugas</button>
+            <button className="rounded-md bg-emerald-400 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-300" type="button" onClick={() => onQuickAdd('courses')}>Mata Kuliah</button>
+            <button className="rounded-md bg-violet-400 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-violet-300" type="button" onClick={() => onQuickAdd('notes')}>Catatan</button>
           </div>
         </div>
 
@@ -41,7 +41,7 @@ function Sidebar({ activeView, courses, selectedCourseId, onNavigate, onQuickAdd
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Mata Kuliah</p>
             {selectedCourseId && (
-              <button className="text-xs text-slate-400 hover:text-slate-100" type="button" onClick={onClearCourse}>All</button>
+              <button className="text-xs text-slate-400 hover:text-slate-100" type="button" onClick={onClearCourse}>Semua</button>
             )}
           </div>
           <div className="space-y-1">

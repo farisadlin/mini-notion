@@ -51,7 +51,7 @@ function App() {
   }
 
   const deleteItem = (entity, id) => {
-    if (!window.confirm('Delete this item?')) return
+    if (!window.confirm('Hapus item ini?')) return
     if (entity === 'courses') {
       setTasks((items) => items.map((task) => (task.courseId === id ? { ...task, courseId: null } : task)))
       if (selectedCourseId === id) setSelectedCourseId(null)
@@ -90,8 +90,8 @@ function App() {
               <div className="flex items-center gap-3">
                 <span className="h-3 w-3 rounded-full" style={{ backgroundColor: selectedCourse.color }} />
                 <div>
-                  <p className="text-sm font-semibold text-slate-100">Filtered by {selectedCourse.name}</p>
-                  <p className="text-xs text-slate-400">{filteredTasks.length} linked tasks visible across task views</p>
+                  <p className="text-sm font-semibold text-slate-100">Difilter oleh {selectedCourse.name}</p>
+                  <p className="text-xs text-slate-400">{filteredTasks.length} tugas terkait terlihat di semua tampilan</p>
                 </div>
               </div>
               <button
@@ -99,7 +99,7 @@ function App() {
                 type="button"
                 onClick={() => setSelectedCourseId(null)}
               >
-                Clear filter
+                Hapus filter
               </button>
             </div>
           )}

@@ -45,7 +45,7 @@ function PropertyInput({ type = 'text', value, onChange, courses = [], placehold
         value={value || ''}
         onChange={(event) => onChange(event.target.value || null)}
       >
-        <option value="">No course</option>
+        <option value="">Tidak ada mata kuliah</option>
         {courses.map((course) => (
           <option key={course.id} value={course.id}>{course.name}</option>
         ))}

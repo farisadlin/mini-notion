@@ -4,22 +4,22 @@ import { entityLabels } from '../data/dummyData'
 
 const fields = {
   tasks: [
-    ['title', 'Title', 'text'],
+    ['title', 'Judul', 'text'],
     ['status', 'Status', 'status'],
-    ['deadline', 'Deadline', 'date'],
-    ['courseId', 'Course', 'course'],
+    ['deadline', 'Tenggat', 'date'],
+    ['courseId', 'Mata Kuliah', 'course'],
   ],
   courses: [
-    ['name', 'Name', 'text'],
+    ['name', 'Nama', 'text'],
     ['credits', 'SKS', 'number'],
-    ['color', 'Color', 'color'],
-    ['schedule', 'Schedule', 'text'],
-    ['location', 'Location', 'text'],
+    ['color', 'Warna', 'color'],
+    ['schedule', 'Jadwal', 'text'],
+    ['location', 'Lokasi', 'text'],
   ],
   notes: [
-    ['title', 'Title', 'text'],
-    ['content', 'Content', 'textarea'],
-    ['tags', 'Tags', 'text'],
+    ['title', 'Judul', 'text'],
+    ['content', 'Isi', 'textarea'],
+    ['tags', 'Tag', 'text'],
   ],
 }
 
@@ -45,10 +45,10 @@ function CrudModal({ entity, mode, item, courses, onClose, onSave }) {
       <form className="w-full max-w-lg rounded-lg border border-slate-700 bg-slate-900 p-5 shadow-2xl" onSubmit={submit}>
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-slate-50">{mode === 'create' ? 'Add' : 'Edit'} {entityLabels[entity]}</h2>
-            <p className="text-sm text-slate-400">Update properties in this temporary workspace.</p>
+            <h2 className="text-lg font-semibold text-slate-50">{mode === 'create' ? 'Tambah' : 'Edit'} {entityLabels[entity]}</h2>
+            <p className="text-sm text-slate-400">Perbarui properti di ruang kerja sementara ini.</p>
           </div>
-          <button className="rounded-md px-2 py-1 text-slate-400 hover:bg-slate-800 hover:text-slate-100" type="button" onClick={onClose}>Close</button>
+          <button className="rounded-md px-2 py-1 text-slate-400 hover:bg-slate-800 hover:text-slate-100" type="button" onClick={onClose}>Tutup</button>
         </div>
 
         <div className="space-y-4">
@@ -61,8 +61,8 @@ function CrudModal({ entity, mode, item, courses, onClose, onSave }) {
         </div>
 
         <div className="mt-6 flex justify-end gap-3">
-          <button className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800" type="button" onClick={onClose}>Cancel</button>
-          <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="submit">Save</button>
+          <button className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800" type="button" onClick={onClose}>Batal</button>
+          <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="submit">Simpan</button>
         </div>
       </form>
     </div>

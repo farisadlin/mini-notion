@@ -17,7 +17,7 @@ export const initialTasks = [
   { id: 'task-1', title: 'Outline usability study', status: 'In Progress', deadline: isoDate(0, 18), courseId: 'course-1', createdAt: isoDate(-7) },
   { id: 'task-2', title: 'Implement binary tree exercise', status: 'To Do', deadline: isoDate(1, 11), courseId: 'course-2', createdAt: isoDate(-5) },
   { id: 'task-3', title: 'Submit literature review', status: 'To Do', deadline: isoDate(0, 23), courseId: 'course-3', createdAt: isoDate(-3) },
-  { id: 'task-4', title: 'Clean dashboard dataset', status: 'Done', deadline: isoDate(-1), courseId: 'course-4', createdAt: isoDate(-9) },
+  { id: 'task-4', title: 'Clean dashboard dataset', status: 'Selesai', deadline: isoDate(-1), courseId: 'course-4', createdAt: isoDate(-9) },
   { id: 'task-5', title: 'Prepare sprint retrospective notes', status: 'In Progress', deadline: isoDate(3), courseId: null, createdAt: isoDate(-2) },
 ]
 
@@ -29,12 +29,12 @@ export const initialNotes = [
 ]
 
 export const entityLabels = {
-  tasks: 'Tasks',
-  courses: 'Courses',
-  notes: 'Notes',
+  tasks: 'Tugas',
+  courses: 'Mata Kuliah',
+  notes: 'Catatan',
 }
 
-export const statusOptions = ['To Do', 'In Progress', 'Done']
+export const statusOptions = ['To Do', 'In Progress', 'Selesai']
 
 export const makeId = (prefix) => `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`
 
@@ -43,7 +43,7 @@ export const createEntity = (entity, values) => {
   if (entity === 'tasks') {
     return {
       id: makeId('task'),
-      title: values.title || 'Untitled task',
+      title: values.title || 'Tugas tanpa judul',
       status: values.status || 'To Do',
       deadline: values.deadline || '',
       courseId: values.courseId || null,
@@ -53,7 +53,7 @@ export const createEntity = (entity, values) => {
   if (entity === 'courses') {
     return {
       id: makeId('course'),
-      name: values.name || 'Untitled course',
+      name: values.name || 'Mata kuliah tanpa judul',
       credits: Number(values.credits) || 0,
       color: values.color || '#38bdf8',
       schedule: values.schedule || '',
@@ -62,7 +62,7 @@ export const createEntity = (entity, values) => {
   }
   return {
     id: makeId('note'),
-    title: values.title || 'Untitled note',
+    title: values.title || 'Catatan tanpa judul',
     content: values.content || '',
     tags: Array.isArray(values.tags) ? values.tags : String(values.tags || '').split(',').map((tag) => tag.trim()).filter(Boolean),
     createdAt: now,

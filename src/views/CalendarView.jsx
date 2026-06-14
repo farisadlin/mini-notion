@@ -17,13 +17,13 @@ function CalendarView({ tasks, courses, onEdit }) {
     <section className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-50">Calendar</h2>
-          <p className="text-sm text-slate-400">Monthly deadline view for active tasks.</p>
+          <h2 className="text-2xl font-semibold text-slate-50">Kalender</h2>
+          <p className="text-sm text-slate-400">Tampilan tenggat bulanan untuk tugas aktif.</p>
         </div>
         <div className="flex items-center gap-2">
-          <button className="rounded-md border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800" type="button" onClick={() => setMonth(subMonths(month, 1))}>Prev</button>
+          <button className="rounded-md border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800" type="button" onClick={() => setMonth(subMonths(month, 1))}>Sebelumnya</button>
           <span className="min-w-36 text-center font-semibold text-slate-100">{format(month, 'MMMM yyyy')}</span>
-          <button className="rounded-md border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800" type="button" onClick={() => setMonth(addMonths(month, 1))}>Next</button>
+          <button className="rounded-md border border-slate-700 px-3 py-2 text-sm hover:bg-slate-800" type="button" onClick={() => setMonth(addMonths(month, 1))}>Selanjutnya</button>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ function CalendarView({ tasks, courses, onEdit }) {
                   <p className="mt-1 text-xs text-slate-500">{task.status}</p>
                 </button>
               )
-            }) : <p className="text-sm text-slate-400">No tasks for this date.</p>}
+            }) : <p className="text-sm text-slate-400">Tidak ada tugas untuk tanggal ini.</p>}
           </div>
         </aside>
       </div>

@@ -49,9 +49,9 @@ function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-2xl font-semibold text-slate-50">Kanban</h2>
-          <p className="text-sm text-slate-400">Drag tasks between workflow columns.</p>
+          <p className="text-sm text-slate-400">Seret tugas antar kolom workflow.</p>
         </div>
-        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd('tasks')}>Add task</button>
+        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd('tasks')}>Tambah Tugas</button>
       </div>
 
       <DndContext onDragEnd={handleDragEnd}>
@@ -65,7 +65,7 @@ function KanbanView({ tasks, courses, onAdd, onEdit, onUpdate }) {
                     {columnTasks.map((task) => (
                       <TaskCard key={task.id} task={task} course={courses.find((course) => course.id === task.courseId)} onEdit={onEdit} />
                     ))}
-                    {!columnTasks.length && <p className="rounded-md border border-dashed border-slate-700 p-3 text-sm text-slate-500">No tasks</p>}
+                    {!columnTasks.length && <p className="rounded-md border border-dashed border-slate-700 p-3 text-sm text-slate-500">Tidak ada tugas</p>}
                   </div>
                 </SortableContext>
               </Column>

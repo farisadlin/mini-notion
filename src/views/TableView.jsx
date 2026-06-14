@@ -3,31 +3,31 @@ import PropertyInput from '../components/PropertyInput'
 
 const configs = {
   tasks: [
-    ['title', 'Title', 'text'],
+    ['title', 'Judul', 'text'],
     ['status', 'Status', 'status'],
-    ['deadline', 'Deadline', 'date'],
-    ['courseId', 'Course', 'course'],
-    ['createdAt', 'Created', 'readonly'],
+    ['deadline', 'Tenggat', 'date'],
+    ['courseId', 'Mata Kuliah', 'course'],
+    ['createdAt', 'Dibuat', 'readonly'],
   ],
   courses: [
-    ['name', 'Name', 'text'],
+    ['name', 'Nama', 'text'],
     ['credits', 'SKS', 'number'],
-    ['color', 'Color', 'color'],
-    ['schedule', 'Schedule', 'text'],
-    ['location', 'Location', 'text'],
+    ['color', 'Warna', 'color'],
+    ['schedule', 'Jadwal', 'text'],
+    ['location', 'Lokasi', 'text'],
   ],
   notes: [
-    ['title', 'Title', 'text'],
-    ['content', 'Content', 'text'],
-    ['tags', 'Tags', 'text'],
-    ['createdAt', 'Created', 'readonly'],
+    ['title', 'Judul', 'text'],
+    ['content', 'Isi', 'text'],
+    ['tags', 'Tag', 'text'],
+    ['createdAt', 'Dibuat', 'readonly'],
   ],
 }
 
-const labels = { tasks: 'Tasks', courses: 'Courses', notes: 'Notes' }
+const labels = { tasks: 'Tugas', courses: 'MK', notes: 'Catatan' }
 
 function displayValue(entity, key, item, courses) {
-  if (key === 'courseId') return courses.find((course) => course.id === item.courseId)?.name || 'No course'
+  if (key === 'courseId') return courses.find((course) => course.id === item.courseId)?.name || 'Tanpa MK'
   if (key === 'deadline' || key === 'createdAt') return item[key] ? new Date(item[key]).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) : '-'
   if (key === 'tags') return item.tags?.join(', ') || '-'
   return item[key] || '-'
@@ -74,10 +74,10 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
     <section className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-50">Table</h2>
-          <p className="text-sm text-slate-400">Inline edit every entity from one database table.</p>
+          <h2 className="text-2xl font-semibold text-slate-50">Tabel</h2>
+          <p className="text-sm text-slate-400">Edit setiap entitas langsung dari satu tabel.</p>
         </div>
-        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd(entity)}>Add {labels[entity]}</button>
+        <button className="rounded-md bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400" type="button" onClick={() => onAdd(entity)}>Tambah {labels[entity]}</button>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -86,7 +86,7 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
             <button className={`rounded-md px-3 py-2 text-sm ${entity === id ? 'bg-slate-700 text-slate-50' : 'text-slate-400 hover:text-slate-100'}`} key={id} type="button" onClick={() => setEntity(id)}>{label}</button>
           ))}
         </div>
-        <input className="min-w-56 flex-1 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400" value={filter} placeholder="Filter rows" onChange={(event) => setFilter(event.target.value)} />
+        <input className="min-w-56 flex-1 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400" value={filter} placeholder="Filter baris" onChange={(event) => setFilter(event.target.value)} />
       </div>
 
       <div className="overflow-hidden rounded-lg border border-slate-800 bg-slate-900/70">
@@ -99,7 +99,7 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
                     <button className="font-semibold hover:text-slate-200" type="button" onClick={() => toggleSort(key)}>{label}</button>
                   </th>
                 ))}
-                <th className="px-4 py-3">Actions</th>
+                <th className="px-4 py-3">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
@@ -128,7 +128,7 @@ function TableView({ tasks, courses, notes, onAdd, onEdit, onUpdate, onDelete })
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 hover:bg-slate-800" type="button" onClick={() => onEdit(entity, item)}>Edit</button>
-                      <button className="rounded-md border border-red-500/50 px-2 py-1 text-xs text-red-200 hover:bg-red-500/10" type="button" onClick={() => onDelete(entity, item.id)}>Delete</button>
+                      <button className="rounded-md border border-red-500/50 px-2 py-1 text-xs text-red-200 hover:bg-red-500/10" type="button" onClick={() => onDelete(entity, item.id)}>Hapus</button>
                     </div>
                   </td>
                 </tr>
