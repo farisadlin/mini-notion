@@ -1,114 +1,179 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { STATUS_OPTIONS, STATUS_LABELS } from "../constants";
-import PropertyInput from "../components/PropertyInput";
+import { STATUS_LABELS, STATUS_OPTIONS, TAG_PALETTE } from "../constants";
 
-function FormView({
-  entity,
-  mode,
-  item,
-  courses = [],
-  statusOptions = STATUS_OPTIONS,
-  onSave,
-  onCancel,
-}) {
+const inputClass =
+  "w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400";
+
+function Field({ label, children, fullWidth = false }) {
+  return (
+    <label className={`block space-y-1 ${fullWidth ? "sm:col-span-2" : ""}`}>
+      <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+        {label}
+      </span>
+      {children}
+    </label>
+  );
+}
+
+function getEmptyForm(entity) {
+  if (entity === "tasks") {
+    return {
+      title: "",
+      status: "To Do",
+      deadline: "",
+      courseId: "",
+    };
+  }
+
+  if (entity === "courses") {
+    return {
+      name: "",
+      credits: "",
+      color: "#38bdf8",
+      schedule: "",
+      location: "",
+    };
+  }
+
+  return {
+    title: "",
+    content: "",
+    tags: [],
+  };
+}
+
+function getFormFromItem(entity, item) {
+  if (!item) {
+    return getEmptyForm(entity);
+  }
+
+  if (entity === "tasks") {
+    return {
+      title: item.title || "",
+      status: item.status || "To Do",
+      deadline: item.deadline ? item.deadline.slice(0, 16) : "",
+      courseId: item.courseId || "",
+    };
+  }
+
+  if (entity === "courses") {
+    return {
+      name: item.name || "",
+      credits: item.credits ?? "",
+      color: item.color || "#38bdf8",
+      schedule: item.schedule || "",
+      location: item.location || "",
+    };
+  }
+
+  return {
+    title: item.title || "",
+    content: item.content || "",
+    tags: Array.isArray(item.tags)
+      ? item.tags.map((tag) =>
+          typeof tag === "string" ? { name: tag, color: "#38bdf8" } : tag
+        )
+      : [],
+  };
+}
+
+function buildSavedItem(entity, formData) {
+  if (entity === "tasks") {
+    return {
+      title: formData.title,
+      status: formData.status,
+      deadline: formData.deadline
+        ? new Date(formData.deadline).toISOString()
+        : "",
+      courseId: formData.courseId || null,
+    };
+  }
+
+  if (entity === "courses") {
+    return {
+      name: formData.name,
+      credits: Number(formData.credits),
+      color: formData.color,
+      schedule: formData.schedule,
+      location: formData.location,
+    };
+  }
+
+  return {
+    title: formData.title,
+    content: formData.content,
+    tags: formData.tags,
+  };
+}
+
+function getEntityName(entity, t) {
+  if (entity === "tasks") return t("entity.tasks");
+  if (entity === "courses") return t("entity.courses");
+  return t("entity.notes");
+}
+
+function FormView({ entity, mode, item, courses = [], onSave, onCancel }) {
   const { t } = useTranslation();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [status, setStatus] = useState("To Do");
-  const [deadline, setDeadline] = useState("");
-  const [courseId, setCourseId] = useState("");
-  const [name, setName] = useState("");
-  const [credits, setCredits] = useState("");
-  const [color, setColor] = useState("#38bdf8");
-  const [schedule, setSchedule] = useState("");
-  const [location, setLocation] = useState("");
-  const [tags, setTags] = useState([]);
+  const [formData, setFormData] = useState(() => getFormFromItem(entity, item));
+  const [newTagName, setNewTagName] = useState("");
 
   /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
-    const empty = () => {
-      setTitle("");
-      setContent("");
-      setStatus("To Do");
-      setDeadline("");
-      setCourseId("");
-      setName("");
-      setCredits("");
-      setColor("#38bdf8");
-      setSchedule("");
-      setLocation("");
-      setTags([]);
+    setFormData(getFormFromItem(entity, item));
+    setNewTagName("");
+  }, [entity, item]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  function updateField(field, value) {
+    setFormData((currentData) => ({
+      ...currentData,
+      [field]: value,
+    }));
+  }
+
+  function addTag() {
+    const name = newTagName.trim();
+    if (!name) return;
+
+    const nextTag = {
+      name,
+      color: TAG_PALETTE[formData.tags.length % TAG_PALETTE.length],
     };
 
-    if (mode !== "edit" || !item) {
-      empty();
-      return;
-    }
+    updateField("tags", [...formData.tags, nextTag]);
+    setNewTagName("");
+  }
 
-    setTitle(item.title || "");
-    setContent(item.content || "");
-    setStatus(item.status || "To Do");
-    setDeadline(item.deadline ? item.deadline.slice(0, 16) : "");
-    setCourseId(item.courseId || "");
-    setName(item.name || "");
-    setCredits(item.credits ?? "");
-    setColor(item.color || "#38bdf8");
-    setSchedule(item.schedule || "");
-    setLocation(item.location || "");
-    setTags(
-      Array.isArray(item.tags)
-        ? item.tags.map((tag) =>
-            typeof tag === "string" ? { name: tag, color: "#38bdf8" } : tag,
-          )
-        : [],
+  function removeTag(indexToRemove) {
+    updateField(
+      "tags",
+      formData.tags.filter((_, index) => index !== indexToRemove)
     );
-  }, [mode, item]);
-  /* eslint-enable react-hooks/set-state-in-effect */
+  }
+
+  function updateTagColor(indexToUpdate, color) {
+    const nextTags = formData.tags.map((tag, index) => {
+      if (index !== indexToUpdate) return tag;
+      return { ...tag, color };
+    });
+
+    updateField("tags", nextTags);
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    const values = {};
-
-    if (entity === "tasks") {
-      values.title = title;
-      values.status = status;
-      values.deadline = deadline ? new Date(deadline).toISOString() : "";
-      values.courseId = courseId || null;
-    } else if (entity === "courses") {
-      values.name = name;
-      values.credits = Number(credits);
-      values.color = color;
-      values.schedule = schedule;
-      values.location = location;
-    } else if (entity === "notes") {
-      values.title = title;
-      values.content = content;
-      values.tags = tags;
-    }
-
-    onSave(entity, values);
-    onCancel();
+    onSave(entity, buildSavedItem(entity, formData));
   }
 
-  const entityName =
-    entity === "tasks"
-      ? t("entity.tasks")
-      : entity === "courses"
-        ? t("entity.courses")
-        : t("entity.notes");
-  const buttonLabel = mode === "create" ? t("modal.add") : t("modal.edit");
-
-  const statusSelectOptions = statusOptions.map((opt) => ({
-    value: opt,
-    label: t(STATUS_LABELS[opt]),
-  }));
+  const entityName = getEntityName(entity, t);
+  const titleAction = mode === "create" ? t("modal.add") : t("modal.edit");
 
   return (
     <div className="rounded-lg border border-slate-700 bg-slate-900/80 p-4">
       <div className="mb-4 flex items-center justify-between">
         <h3 className="font-semibold text-slate-50">
-          {buttonLabel} {entityName}
+          {titleAction} {entityName}
         </h3>
         <button
           className="text-sm text-slate-400 hover:text-slate-100"
@@ -125,89 +190,177 @@ function FormView({
       >
         {entity === "tasks" && (
           <>
-            <PropertyInput
-              label={t("column.title")}
-              value={title}
-              onChange={setTitle}
-            />
-            <PropertyInput
-              label={t("column.status")}
-              type="select"
-              value={status}
-              onChange={setStatus}
-              options={statusSelectOptions}
-            />
-            <PropertyInput
-              label={t("column.deadline")}
-              type="date"
-              value={deadline}
-              onChange={setDeadline}
-            />
-            <PropertyInput
-              label={t("column.course")}
-              type="courseSelect"
-              value={courseId}
-              onChange={setCourseId}
-              courses={courses}
-            />
+            <Field label={t("column.title")}>
+              <input
+                className={inputClass}
+                value={formData.title}
+                onChange={(event) => updateField("title", event.target.value)}
+              />
+            </Field>
+
+            <Field label={t("column.status")}>
+              <select
+                className={inputClass}
+                value={formData.status}
+                onChange={(event) => updateField("status", event.target.value)}
+              >
+                {STATUS_OPTIONS.map((status) => (
+                  <option key={status} value={status}>
+                    {t(STATUS_LABELS[status])}
+                  </option>
+                ))}
+              </select>
+            </Field>
+
+            <Field label={t("column.deadline")}>
+              <input
+                className={inputClass}
+                type="datetime-local"
+                value={formData.deadline}
+                onChange={(event) =>
+                  updateField("deadline", event.target.value)
+                }
+              />
+            </Field>
+
+            <Field label={t("column.course")}>
+              <select
+                className={inputClass}
+                value={formData.courseId}
+                onChange={(event) =>
+                  updateField("courseId", event.target.value)
+                }
+              >
+                <option value="">{t("modal.noCourse")}</option>
+                {courses.map((course) => (
+                  <option key={course.id} value={course.id}>
+                    {course.name}
+                  </option>
+                ))}
+              </select>
+            </Field>
           </>
         )}
 
         {entity === "courses" && (
           <>
-            <PropertyInput
-              label={t("column.name")}
-              value={name}
-              onChange={setName}
-            />
-            <PropertyInput
-              label={t("column.credits")}
-              type="number"
-              value={credits}
-              onChange={setCredits}
-            />
-            <PropertyInput
-              label={t("column.color")}
-              type="color"
-              value={color}
-              onChange={setColor}
-            />
-            <PropertyInput
-              label={t("column.schedule")}
-              value={schedule}
-              onChange={setSchedule}
-            />
-            <PropertyInput
-              label={t("column.location")}
-              value={location}
-              onChange={setLocation}
-              spanFull
-            />
+            <Field label={t("column.name")}>
+              <input
+                className={inputClass}
+                value={formData.name}
+                onChange={(event) => updateField("name", event.target.value)}
+              />
+            </Field>
+
+            <Field label={t("column.credits")}>
+              <input
+                className={inputClass}
+                type="number"
+                value={formData.credits}
+                onChange={(event) => updateField("credits", event.target.value)}
+              />
+            </Field>
+
+            <Field label={t("column.color")}>
+              <input
+                className="h-10 w-full rounded border border-slate-700 bg-slate-950 px-2"
+                type="color"
+                value={formData.color}
+                onChange={(event) => updateField("color", event.target.value)}
+              />
+            </Field>
+
+            <Field label={t("column.schedule")}>
+              <input
+                className={inputClass}
+                value={formData.schedule}
+                onChange={(event) =>
+                  updateField("schedule", event.target.value)
+                }
+              />
+            </Field>
+
+            <Field label={t("column.location")} fullWidth>
+              <input
+                className={inputClass}
+                value={formData.location}
+                onChange={(event) =>
+                  updateField("location", event.target.value)
+                }
+              />
+            </Field>
           </>
         )}
 
         {entity === "notes" && (
           <>
-            <PropertyInput
-              label={t("column.title")}
-              value={title}
-              onChange={setTitle}
-              spanFull
-            />
-            <PropertyInput
-              label={t("column.content")}
-              type="textarea"
-              value={content}
-              onChange={setContent}
-              spanFull
-            />
-            <PropertyInput
-              label={t("column.tags")}
-              type="tags"
-              tags={tags}
-              onTagsChange={setTags}
-              spanFull
-            />
+            <Field label={t("column.title")} fullWidth>
+              <input
+                className={inputClass}
+                value={formData.title}
+                onChange={(event) => updateField("title", event.target.value)}
+              />
+            </Field>
+
+            <Field label={t("column.content")} fullWidth>
+              <textarea
+                className={`min-h-24 ${inputClass}`}
+                value={formData.content}
+                onChange={(event) => updateField("content", event.target.value)}
+              />
+            </Field>
+
+            <div className="space-y-2 sm:col-span-2">
+              <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                {t("column.tags")}
+              </span>
+
+              <div className="flex gap-2">
+                <input
+                  className={`flex-1 ${inputClass}`}
+                  placeholder={t("form.newTag")}
+                  value={newTagName}
+                  onChange={(event) => setNewTagName(event.target.value)}
+                />
+                <button
+                  className="rounded bg-sky-500 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400"
+                  type="button"
+                  onClick={addTag}
+                >
+                  {t("form.addTag")}
+                </button>
+              </div>
+
+              {formData.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {formData.tags.map((tag, index) => (
+                    <div
+                      className="flex items-center gap-1 rounded-full bg-slate-800 py-1 pl-1 pr-2"
+                      key={`${tag.name}-${index}`}
+                    >
+                      <input
+                        className="h-5 w-5 cursor-pointer rounded-full border-0 p-0"
+                        type="color"
+                        value={tag.color}
+                        onChange={(event) =>
+                          updateTagColor(index, event.target.value)
+                        }
+                      />
+                      <span className="text-xs text-slate-200">
+                        {tag.name}
+                      </span>
+                      <button
+                        className="ml-1 text-xs text-slate-400 hover:text-red-300"
+                        type="button"
+                        onClick={() => removeTag(index)}
+                      >
+                        x
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </>
         )}
 

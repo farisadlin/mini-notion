@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+function formatDateTime(value) {
+  return new Date(value).toLocaleString([], {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
 function GalleryView({ notes, onAdd, onEdit, onDelete }) {
   const { t } = useTranslation();
   const [activeNote, setActiveNote] = useState(null);
@@ -43,10 +50,10 @@ function GalleryView({ notes, onAdd, onEdit, onDelete }) {
               {note.tags.map((tag) => (
                 <span
                   className="rounded-full px-2.5 py-1 text-xs text-slate-100"
-                  key={tag.name || tag}
-                  style={{ backgroundColor: tag.color || "#38bdf8" }}
+                  key={tag.name}
+                  style={{ backgroundColor: tag.color }}
                 >
-                  {tag.name || tag}
+                  {tag.name}
                 </span>
               ))}
             </div>
@@ -79,10 +86,7 @@ function GalleryView({ notes, onAdd, onEdit, onDelete }) {
                   {activeNote.title}
                 </h3>
                 <p className="mt-1 text-xs text-slate-500">
-                  {new Date(activeNote.createdAt).toLocaleString([], {
-                    dateStyle: "medium",
-                    timeStyle: "short",
-                  })}
+                  {formatDateTime(activeNote.createdAt)}
                 </p>
               </div>
               <button
@@ -100,10 +104,10 @@ function GalleryView({ notes, onAdd, onEdit, onDelete }) {
               {activeNote.tags.map((tag) => (
                 <span
                   className="rounded-full px-2.5 py-1 text-xs text-slate-100"
-                  key={tag.name || tag}
-                  style={{ backgroundColor: tag.color || "#38bdf8" }}
+                  key={tag.name}
+                  style={{ backgroundColor: tag.color }}
                 >
-                  {tag.name || tag}
+                  {tag.name}
                 </span>
               ))}
             </div>

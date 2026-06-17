@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+function findCourse(courses, courseId) {
+  return courses.find((course) => course.id === courseId);
+}
+
+function getStatusLabelKey(status) {
+  if (status === "To Do") return "status.todo";
+  if (status === "In Progress") return "status.inProgress";
+  return "status.done";
+}
+
 function CalendarView({ tasks, courses, onEdit }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === "id" ? "id-ID" : "en-US";
@@ -166,9 +176,7 @@ function CalendarView({ tasks, courses, onEdit }) {
                   </span>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {dayTasks.slice(0, 4).map((task) => {
-                      const course = courses.find(
-                        (item) => item.id === task.courseId,
-                      );
+                      const course = findCourse(courses, task.courseId);
 
                       return (
                         <span
@@ -194,9 +202,7 @@ function CalendarView({ tasks, courses, onEdit }) {
           <div className="space-y-3">
             {selectedTasks.length > 0 ? (
               selectedTasks.map((task) => {
-                const course = courses.find(
-                  (item) => item.id === task.courseId,
-                );
+                const course = findCourse(courses, task.courseId);
 
                 return (
                   <button
@@ -215,13 +221,7 @@ function CalendarView({ tasks, courses, onEdit }) {
                       </p>
                     </div>
                     <p className="mt-1 text-xs text-slate-500">
-                      {t(
-                        task.status === "To Do"
-                          ? "status.todo"
-                          : task.status === "In Progress"
-                            ? "status.inProgress"
-                            : "status.done",
-                      )}
+                      {t(getStatusLabelKey(task.status))}
                     </p>
                   </button>
                 );

@@ -9,108 +9,242 @@ import CalendarView from "./views/CalendarView";
 import GalleryView from "./views/GalleryView";
 import FormView from "./views/FormView";
 import {
-  createEntity,
+  createCourse,
+  createNote,
+  createTask,
   initialCourses,
   initialNotes,
   initialTasks,
 } from "./data/dummyData";
 
-const VIEWS = {
-  dashboard: DashboardView,
-  table: TableView,
-  kanban: KanbanView,
-  calendar: CalendarView,
-  gallery: GalleryView,
-  form: FormView,
-};
-
 function App() {
   const { t } = useTranslation();
   const [activeView, setActiveView] = useState("dashboard");
+  const [tableEntity, setTableEntity] = useState("tasks");
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [tasks, setTasks] = useState(initialTasks);
   const [courses, setCourses] = useState(initialCourses);
   const [notes, setNotes] = useState(initialNotes);
-  const [formMeta, setFormMeta] = useState(null);
-  const [prevView, setPrevView] = useState("dashboard");
-
-  function openCreate(entity) {
-    setPrevView(activeView);
-    setFormMeta({ entity, mode: "create", item: null });
-    setActiveView("form");
-  }
-
-  function openEdit(entity, item) {
-    setPrevView(activeView);
-    setFormMeta({ entity, mode: "edit", item });
-    setActiveView("form");
-  }
-
-  function handleFormSave(entity, values) {
-    if (formMeta.mode === "create") {
-      const setters = {
-        tasks: setTasks,
-        courses: setCourses,
-        notes: setNotes,
-      };
-      setters[entity]((items) => [createEntity(entity, values), ...items]);
-    } else {
-      const setters = {
-        tasks: setTasks,
-        courses: setCourses,
-        notes: setNotes,
-      };
-      setters[entity]((items) =>
-        items.map((item) =>
-          item.id === formMeta.item.id ? { ...item, ...values } : item
-        )
-      );
-    }
-  }
-
-  function handleFormCancel() {
-    setFormMeta(null);
-    setActiveView(prevView);
-  }
-
-  function handleReorder(entity, activeId, overId) {
-    if (entity !== "tasks") return;
-    setTasks((items) => {
-      const oldIndex = items.findIndex((t) => t.id === activeId);
-      const newIndex = items.findIndex((t) => t.id === overId);
-      if (oldIndex === -1 || newIndex === -1) return items;
-      return arrayMove(items, oldIndex, newIndex);
-    });
-  }
-
-  function deleteItem(entity, id) {
-    if (!window.confirm(t("confirm.delete"))) return;
-    const setters = { tasks: setTasks, courses: setCourses, notes: setNotes };
-    if (entity === "courses") {
-      setTasks((items) =>
-        items.map((task) =>
-          task.courseId === id ? { ...task, courseId: null } : task
-        )
-      );
-      if (selectedCourseId === id) setSelectedCourseId(null);
-    }
-    setters[entity]((items) => items.filter((item) => item.id !== id));
-  }
+  const [formState, setFormState] = useState({
+    entity: null,
+    mode: "create",
+    item: null,
+    previousView: "dashboard",
+  });
 
   const filteredTasks = useMemo(() => {
     if (!selectedCourseId) return tasks;
     return tasks.filter((task) => task.courseId === selectedCourseId);
   }, [selectedCourseId, tasks]);
 
-  const selectedCourse = courses.find((c) => c.id === selectedCourseId);
-  const ActiveView = VIEWS[activeView] || DashboardView;
+  const selectedCourse = courses.find((course) => course.id === selectedCourseId);
+
+  function showCreateForm(entity) {
+    setFormState({
+      entity,
+      mode: "create",
+      item: null,
+      previousView: activeView,
+    });
+    setActiveView("form");
+  }
+
+  function showEditForm(entity, item) {
+    setFormState({
+      entity,
+      mode: "edit",
+      item,
+      previousView: activeView,
+    });
+    setActiveView("form");
+  }
+
+  function closeForm() {
+    setActiveView(formState.previousView);
+    setFormState({
+      entity: null,
+      mode: "create",
+      item: null,
+      previousView: "dashboard",
+    });
+  }
+
+  function addTask(values) {
+    setTasks((currentTasks) => [createTask(values), ...currentTasks]);
+  }
+
+  function addCourse(values) {
+    setCourses((currentCourses) => [createCourse(values), ...currentCourses]);
+  }
+
+  function addNote(values) {
+    setNotes((currentNotes) => [createNote(values), ...currentNotes]);
+  }
+
+  function updateTask(id, values) {
+    setTasks((currentTasks) => {
+      return currentTasks.map((task) =>
+        task.id === id ? { ...task, ...values } : task
+      );
+    });
+  }
+
+  function updateCourse(id, values) {
+    setCourses((currentCourses) => {
+      return currentCourses.map((course) =>
+        course.id === id ? { ...course, ...values } : course
+      );
+    });
+  }
+
+  function updateNote(id, values) {
+    setNotes((currentNotes) => {
+      return currentNotes.map((note) =>
+        note.id === id ? { ...note, ...values } : note
+      );
+    });
+  }
+
+  function deleteTask(id) {
+    if (!window.confirm(t("confirm.delete"))) return;
+    setTasks((currentTasks) => currentTasks.filter((task) => task.id !== id));
+  }
+
+  function deleteCourse(id) {
+    if (!window.confirm(t("confirm.delete"))) return;
+
+    setCourses((currentCourses) =>
+      currentCourses.filter((course) => course.id !== id)
+    );
+    setTasks((currentTasks) =>
+      currentTasks.map((task) =>
+        task.courseId === id ? { ...task, courseId: null } : task
+      )
+    );
+
+    if (selectedCourseId === id) {
+      setSelectedCourseId(null);
+    }
+  }
+
+  function deleteNote(id) {
+    if (!window.confirm(t("confirm.delete"))) return;
+    setNotes((currentNotes) => currentNotes.filter((note) => note.id !== id));
+  }
+
+  function updateItem(entity, id, values) {
+    if (entity === "tasks") updateTask(id, values);
+    if (entity === "courses") updateCourse(id, values);
+    if (entity === "notes") updateNote(id, values);
+  }
+
+  function deleteItem(entity, id) {
+    if (entity === "tasks") deleteTask(id);
+    if (entity === "courses") deleteCourse(id);
+    if (entity === "notes") deleteNote(id);
+  }
+
+  function saveForm(entity, values) {
+    if (formState.mode === "create") {
+      if (entity === "tasks") addTask(values);
+      if (entity === "courses") addCourse(values);
+      if (entity === "notes") addNote(values);
+    }
+
+    if (formState.mode === "edit") {
+      updateItem(entity, formState.item.id, values);
+    }
+
+    closeForm();
+  }
+
+  function reorderTask(activeId, overId) {
+    setTasks((currentTasks) => {
+      const oldIndex = currentTasks.findIndex((task) => task.id === activeId);
+      const newIndex = currentTasks.findIndex((task) => task.id === overId);
+
+      if (oldIndex === -1 || newIndex === -1) {
+        return currentTasks;
+      }
+
+      return arrayMove(currentTasks, oldIndex, newIndex);
+    });
+  }
+
+  function renderView() {
+    if (activeView === "form") {
+      return (
+        <FormView
+          entity={formState.entity}
+          mode={formState.mode}
+          item={formState.item}
+          courses={courses}
+          onSave={saveForm}
+          onCancel={closeForm}
+        />
+      );
+    }
+
+    if (activeView === "table") {
+      return (
+        <TableView
+          activeEntity={tableEntity}
+          tasks={filteredTasks}
+          courses={courses}
+          notes={notes}
+          onEntityChange={setTableEntity}
+          onAdd={showCreateForm}
+          onEdit={showEditForm}
+          onDelete={deleteItem}
+        />
+      );
+    }
+
+    if (activeView === "kanban") {
+      return (
+        <KanbanView
+          tasks={filteredTasks}
+          courses={courses}
+          onAdd={showCreateForm}
+          onEdit={showEditForm}
+          onUpdate={updateItem}
+          onReorder={reorderTask}
+        />
+      );
+    }
+
+    if (activeView === "calendar") {
+      return (
+        <CalendarView
+          tasks={filteredTasks}
+          courses={courses}
+          onEdit={showEditForm}
+        />
+      );
+    }
+
+    if (activeView === "gallery") {
+      return (
+        <GalleryView
+          notes={notes}
+          onAdd={showCreateForm}
+          onEdit={showEditForm}
+          onDelete={deleteItem}
+        />
+      );
+    }
+
+    return (
+      <DashboardView tasks={filteredTasks} allTasks={tasks} courses={courses} />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <Navbar
         activeView={activeView}
         onNavigate={setActiveView}
-        onQuickAdd={openCreate}
+        onQuickAdd={showCreateForm}
       />
 
       <main>
@@ -141,40 +275,7 @@ function App() {
             </div>
           )}
 
-          <ActiveView
-            {...(activeView === "form"
-              ? {
-                  entity: formMeta?.entity,
-                  mode: formMeta?.mode,
-                  item: formMeta?.item,
-                  courses,
-                  onSave: handleFormSave,
-                  onCancel: handleFormCancel,
-                }
-              : {
-                  tasks: filteredTasks,
-                  allTasks: tasks,
-                  courses,
-                  notes,
-                  selectedCourseId,
-                  onAdd: openCreate,
-                  onEdit: openEdit,
-                  onUpdate: (entity, id, patch) => {
-                    const setters = {
-                      tasks: setTasks,
-                      courses: setCourses,
-                      notes: setNotes,
-                    };
-                    setters[entity]((items) =>
-                      items.map((item) =>
-                        item.id === id ? { ...item, ...patch } : item
-                      )
-                    );
-                  },
-                  onDelete: deleteItem,
-                  onReorder: handleReorder,
-                })}
-          />
+          {renderView()}
         </div>
       </main>
     </div>

@@ -1,17 +1,42 @@
-# React + Vite
+# Mini Notion
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Mini Notion is a small React + Vite lesson project. It teaches how to build a simple productivity workspace with tasks, courses, notes, multiple views, forms, drag-and-drop, and bilingual text.
 
-Currently, two official plugins are available:
+The code intentionally favors clear beginner logic over clever abstraction. Each entity has its own create, update, and delete path so students can trace what happens from a button click to a state update.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## How To Run
 
-## React Compiler
+```bash
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Useful Checks
 
-## Expanding the ESLint configuration
+```bash
+npm run lint
+npm run build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# setup-mini-notion
+## Suggested Reading Order
+
+1. `src/main.jsx` mounts the React app.
+2. `src/App.jsx` owns the main state and chooses which view to show.
+3. `src/data/dummyData.js` contains starter data and create helpers.
+4. `src/components/Navbar.jsx` changes views and opens quick-add forms.
+5. `src/views/FormView.jsx` handles create and edit forms.
+6. `src/views/TableView.jsx` shows all entities in table form.
+7. `src/views/KanbanView.jsx` shows task workflow and drag-and-drop.
+8. `src/views/CalendarView.jsx` shows task deadlines by date.
+9. `src/views/GalleryView.jsx` shows notes as cards.
+10. `src/views/DashboardView.jsx` summarizes schedule, urgency, and progress.
+11. `src/i18n/index.js` stores Indonesian and English text.
+
+## Main Ideas To Teach
+
+- State lives in `App.jsx`, then flows down to views as props.
+- Views call callback props when users add, edit, delete, or move data.
+- Forms use one `formData` object so fields are easy to update.
+- Tasks can link to courses through `courseId`.
+- Notes store tags as small objects with `name` and `color`.
+- The language toggle changes text through `i18next`.

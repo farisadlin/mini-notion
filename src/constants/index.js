@@ -7,15 +7,6 @@ export const NAV_ITEMS = [
   ["gallery", "nav.gallery"],
 ];
 
-// ─── Entity ──────────────────────────────────
-export const ENTITY_LABELS = {
-  tasks: "Tugas",
-  courses: "Mata Kuliah",
-  notes: "Catatan",
-};
-
-export const ENTITY_KEYS = ["tasks", "courses", "notes"];
-
 // ─── Status ──────────────────────────────────
 export const STATUS_OPTIONS = ["To Do", "In Progress", "Selesai"];
 

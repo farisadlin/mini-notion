@@ -1,6 +1,15 @@
 import { differenceInHours, isAfter, isBefore } from "date-fns";
 import { useTranslation } from "react-i18next";
 
+function findCourse(courses, courseId) {
+  return courses.find((course) => course.id === courseId);
+}
+
+function getCompletionPercent(done, total) {
+  if (total === 0) return 0;
+  return Math.round((done / total) * 100);
+}
+
 function DashboardView({ tasks, allTasks, courses }) {
   const { t, i18n } = useTranslation();
   const weekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
@@ -22,9 +31,7 @@ function DashboardView({ tasks, allTasks, courses }) {
     .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
   const completed = tasks.filter((task) => task.status === "Selesai").length;
-  const percent = tasks.length
-    ? Math.round((completed / tasks.length) * 100)
-    : 0;
+  const percent = getCompletionPercent(completed, tasks.length);
 
   return (
     <section className="space-y-6">
@@ -84,9 +91,7 @@ function DashboardView({ tasks, allTasks, courses }) {
                   0,
                   differenceInHours(new Date(task.deadline), now),
                 );
-                const course = courses.find(
-                  (item) => item.id === task.courseId,
-                );
+                const course = findCourse(courses, task.courseId);
                 return (
                   <article
                     className={`rounded-md border p-3 ${hours < 6 ? "border-red-500/50 bg-red-500/10" : "border-yellow-400/50 bg-yellow-400/10"}`}
@@ -136,9 +141,10 @@ function DashboardView({ tasks, allTasks, courses }) {
             const done = courseTasks.filter(
               (task) => task.status === "Selesai",
             ).length;
-            const coursePercent = courseTasks.length
-              ? Math.round((done / courseTasks.length) * 100)
-              : 0;
+            const coursePercent = getCompletionPercent(
+              done,
+              courseTasks.length,
+            );
             return (
               <article
                 className="rounded-md border border-slate-800 bg-slate-950 p-3"

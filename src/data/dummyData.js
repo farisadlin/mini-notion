@@ -1,12 +1,13 @@
 import { TAG_PALETTE } from "../constants";
 
 const today = new Date();
-const isoDate = (offsetDays = 0, hours = 9) => {
+
+function isoDate(offsetDays = 0, hours = 9) {
   const date = new Date(today);
   date.setDate(date.getDate() + offsetDays);
   date.setHours(hours, 0, 0, 0);
   return date.toISOString();
-};
+}
 
 export const initialCourses = [
   {
@@ -130,44 +131,56 @@ export const initialNotes = [
   },
 ];
 
-export const makeId = (prefix) =>
-  `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+export function makeId(prefix) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
 
-export const createEntity = (entity, values) => {
+export function makeTags(value) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  return String(value || "")
+    .split(",")
+    .map((tag, index) => ({
+      name: tag.trim(),
+      color: TAG_PALETTE[index % TAG_PALETTE.length],
+    }))
+    .filter((tag) => tag.name);
+}
+
+export function createTask(values) {
   const now = new Date().toISOString();
-  if (entity === "tasks") {
-    return {
-      id: makeId("task"),
-      title: values.title || "Tugas tanpa judul",
-      status: values.status || "To Do",
-      deadline: values.deadline || "",
-      courseId: values.courseId || null,
-      createdAt: now,
-    };
-  }
-  if (entity === "courses") {
-    return {
-      id: makeId("course"),
-      name: values.name || "Mata kuliah tanpa judul",
-      credits: Number(values.credits) || 0,
-      color: values.color || "#38bdf8",
-      schedule: values.schedule || "",
-      location: values.location || "",
-    };
-  }
+
+  return {
+    id: makeId("task"),
+    title: values.title || "Tugas tanpa judul",
+    status: values.status || "To Do",
+    deadline: values.deadline || "",
+    courseId: values.courseId || null,
+    createdAt: now,
+  };
+}
+
+export function createCourse(values) {
+  return {
+    id: makeId("course"),
+    name: values.name || "Mata kuliah tanpa judul",
+    credits: Number(values.credits) || 0,
+    color: values.color || "#38bdf8",
+    schedule: values.schedule || "",
+    location: values.location || "",
+  };
+}
+
+export function createNote(values) {
+  const now = new Date().toISOString();
+
   return {
     id: makeId("note"),
     title: values.title || "Catatan tanpa judul",
     content: values.content || "",
-    tags: Array.isArray(values.tags)
-      ? values.tags
-      : String(values.tags || "")
-          .split(",")
-          .map((tag, index) => ({
-            name: tag.trim(),
-            color: TAG_PALETTE[index % TAG_PALETTE.length],
-          }))
-          .filter((tag) => tag.name),
+    tags: makeTags(values.tags),
     createdAt: now,
   };
-};
+}
