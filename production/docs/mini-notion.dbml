@@ -1,0 +1,49 @@
+Project Mini_Notion {
+  Note: 'Model konseptual berdasarkan React state saat ini; aplikasi belum memakai database.'
+}
+
+Table COURSE {
+  id varchar [pk]
+  name varchar [not null]
+  credits int [not null]
+  color varchar [not null]
+  schedule varchar
+  location varchar
+
+  Note: 'Sumber data saat ini: courses state di App.jsx.'
+}
+
+Table TASK {
+  id varchar [pk]
+  title varchar [not null]
+  status varchar [not null, note: 'To Do, In Progress, atau Done']
+  deadline timestamp
+  courseId varchar [note: 'Opsional; task boleh tidak terhubung ke course.']
+  createdAt timestamp [not null]
+
+  Note: 'Sumber data saat ini: tasks state di App.jsx.'
+}
+
+Table NOTE {
+  id varchar [pk]
+  title varchar [not null]
+  content text
+  createdAt timestamp [not null]
+
+  Note: 'Sumber data saat ini: notes state di App.jsx.'
+}
+
+Table TAG {
+  noteId varchar [not null]
+  name varchar [not null]
+  color varchar [not null]
+
+  indexes {
+    (noteId, name) [pk]
+  }
+
+  Note: 'Representasi konseptual. Dalam kode, tag adalah object tertanam di array note.tags, bukan state atau tabel terpisah.'
+}
+
+Ref: COURSE.id < TASK.courseId [delete: set null]
+Ref: NOTE.id < TAG.noteId [delete: cascade]
