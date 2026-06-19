@@ -72,7 +72,7 @@ export const initialTasks = [
   {
     id: "task-4",
     title: "Clean dashboard dataset",
-    status: "Selesai",
+    status: "Done",
     deadline: isoDate(-1),
     courseId: "course-4",
     createdAt: isoDate(-9),

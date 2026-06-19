@@ -51,7 +51,7 @@ const resources = {
       "kanban.noTasks": "Tidak ada tugas",
       "kanban.todo": "To Do",
       "kanban.inProgress": "In Progress",
-      "kanban.done": "Selesai",
+      "kanban.done": "Done",
       "calendar.title": "Kalender",
       "calendar.subtitle": "Tampilan tenggat bulanan untuk tugas aktif.",
       "calendar.prev": "Sebelumnya",
@@ -79,7 +79,7 @@ const resources = {
         "{{count}} tugas terkait terlihat di semua tampilan",
       "status.todo": "To Do",
       "status.inProgress": "In Progress",
-      "status.done": "Selesai",
+      "status.done": "Done",
     },
   },
   en: {

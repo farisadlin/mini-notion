@@ -8,18 +8,18 @@ export const NAV_ITEMS = [
 ];
 
 // ─── Status ──────────────────────────────────
-export const STATUS_OPTIONS = ["To Do", "In Progress", "Selesai"];
+export const STATUS_OPTIONS = ["To Do", "In Progress", "Done"];
 
 export const STATUS_LABEL_KEYS = {
   "To Do": "kanban.todo",
   "In Progress": "kanban.inProgress",
-  Selesai: "kanban.done",
+  Done: "kanban.done",
 };
 
 export const STATUS_LABELS = {
   "To Do": "status.todo",
   "In Progress": "status.inProgress",
-  Selesai: "status.done",
+  Done: "status.done",
 };
 
 // ─── Tags ────────────────────────────────────

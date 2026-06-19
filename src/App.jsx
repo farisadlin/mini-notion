@@ -37,7 +37,9 @@ function App() {
     return tasks.filter((task) => task.courseId === selectedCourseId);
   }, [selectedCourseId, tasks]);
 
-  const selectedCourse = courses.find((course) => course.id === selectedCourseId);
+  const selectedCourse = courses.find(
+    (course) => course.id === selectedCourseId,
+  );
 
   function showCreateForm(entity) {
     setFormState({
@@ -84,7 +86,7 @@ function App() {
   function updateTask(id, values) {
     setTasks((currentTasks) => {
       return currentTasks.map((task) =>
-        task.id === id ? { ...task, ...values } : task
+        task.id === id ? { ...task, ...values } : task,
       );
     });
   }
@@ -92,7 +94,7 @@ function App() {
   function updateCourse(id, values) {
     setCourses((currentCourses) => {
       return currentCourses.map((course) =>
-        course.id === id ? { ...course, ...values } : course
+        course.id === id ? { ...course, ...values } : course,
       );
     });
   }
@@ -100,7 +102,7 @@ function App() {
   function updateNote(id, values) {
     setNotes((currentNotes) => {
       return currentNotes.map((note) =>
-        note.id === id ? { ...note, ...values } : note
+        note.id === id ? { ...note, ...values } : note,
       );
     });
   }
@@ -114,12 +116,12 @@ function App() {
     if (!window.confirm(t("confirm.delete"))) return;
 
     setCourses((currentCourses) =>
-      currentCourses.filter((course) => course.id !== id)
+      currentCourses.filter((course) => course.id !== id),
     );
     setTasks((currentTasks) =>
       currentTasks.map((task) =>
-        task.courseId === id ? { ...task, courseId: null } : task
-      )
+        task.courseId === id ? { ...task, courseId: null } : task,
+      ),
     );
 
     if (selectedCourseId === id) {

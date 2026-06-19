@@ -23,14 +23,14 @@ function DashboardView({ tasks, allTasks, courses }) {
   const now = new Date();
   const in24h = new Date(now.getTime() + 24 * 60 * 60 * 1000);
   const urgentTasks = tasks
-    .filter((task) => task.deadline && task.status !== "Selesai")
+    .filter((task) => task.deadline && task.status !== "Done")
     .filter((task) => {
       const deadline = new Date(task.deadline);
       return isAfter(deadline, now) && isBefore(deadline, in24h);
     })
     .sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
 
-  const completed = tasks.filter((task) => task.status === "Selesai").length;
+  const completed = tasks.filter((task) => task.status === "Done").length;
   const percent = getCompletionPercent(completed, tasks.length);
 
   return (
@@ -139,7 +139,7 @@ function DashboardView({ tasks, allTasks, courses }) {
               (task) => task.courseId === course.id,
             );
             const done = courseTasks.filter(
-              (task) => task.status === "Selesai",
+              (task) => task.status === "Done",
             ).length;
             const coursePercent = getCompletionPercent(
               done,

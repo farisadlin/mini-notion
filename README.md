@@ -18,6 +18,15 @@ npm run lint
 npm run build
 ```
 
+## Workshop Materials
+
+- [`docs/architecture.md`](docs/architecture.md) explains the entity relationships, React state flow, CRUD callbacks, and current in-memory storage model.
+- [`docs/mini-notion.dbml`](docs/mini-notion.dbml) can be imported into dbdiagram.io for an editable ERD.
+- [`docs/mini-notion-flow.excalidraw`](docs/mini-notion-flow.excalidraw) contains an editable canvas for the application flow.
+- `docs/workshop-8-jam.md` contains the 8-hour teaching rundown, build order, fallback plan, and manual QA.
+- `docs/checkpoints.md` explains the recommended checkpoint branches and recovery flow for participants who fall behind.
+- `../mini-notion-workshop-guide.html` is the presenter slide deck.
+
 ## Suggested Reading Order
 
 1. `src/main.jsx` mounts the React app.
