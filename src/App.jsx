@@ -37,9 +37,11 @@ function App() {
     return tasks.filter((task) => task.courseId === selectedCourseId);
   }, [selectedCourseId, tasks]);
 
-  const selectedCourse = courses.find(
-    (course) => course.id === selectedCourseId,
-  );
+  const showCourseFilter =
+    activeView === "dashboard" ||
+    activeView === "kanban" ||
+    activeView === "calendar" ||
+    (activeView === "table" && tableEntity === "tasks");
 
   function showCreateForm(entity) {
     setFormState({
@@ -251,29 +253,37 @@ function App() {
 
       <main>
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:px-8">
-          {selectedCourse && (
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-800 bg-slate-900/80 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span
-                  className="h-3 w-3 rounded-full"
-                  style={{ backgroundColor: selectedCourse.color }}
-                />
-                <div>
-                  <p className="text-sm font-semibold text-slate-100">
-                    {t("filter.filteredBy", { name: selectedCourse.name })}
-                  </p>
-                  <p className="text-xs text-slate-400">
-                    {t("filter.tasksVisible", { count: filteredTasks.length })}
-                  </p>
-                </div>
+          {showCourseFilter && (
+            <div className="flex flex-col gap-2 border-b border-slate-800 pb-4 sm:flex-row sm:items-end sm:justify-between">
+              <div className="w-full sm:max-w-xs">
+                <label
+                  className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-slate-500"
+                  htmlFor="course-filter"
+                >
+                  {t("filter.label")}
+                </label>
+                <select
+                  className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 outline-none transition focus:border-sky-400 focus:ring-2 focus:ring-sky-400/20"
+                  id="course-filter"
+                  value={selectedCourseId || ""}
+                  onChange={(event) =>
+                    setSelectedCourseId(event.target.value || null)
+                  }
+                >
+                  <option value="">{t("filter.allCourses")}</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={course.id}>
+                      {course.name}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <button
-                className="rounded-md border border-slate-700 px-3 py-2 text-sm text-slate-200 hover:border-slate-500 hover:bg-slate-800"
-                type="button"
-                onClick={() => setSelectedCourseId(null)}
+              <p
+                aria-live="polite"
+                className="text-sm text-slate-400 sm:pb-2"
               >
-                {t("button.clearFilter")}
-              </button>
+                {t("filter.tasksVisible", { count: filteredTasks.length })}
+              </p>
             </div>
           )}
 

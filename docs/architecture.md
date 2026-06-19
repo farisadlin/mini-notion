@@ -151,7 +151,7 @@ flowchart LR
 4. Data dikirim dari `App` ke view melalui props. View tidak menyimpan collection utama sendiri.
 5. Saat pengguna menambah, mengedit, menghapus, atau memindahkan task, view memanggil callback dari `App`.
 6. Callback memperbarui state React. Perubahan state memicu render ulang sehingga view menampilkan data terbaru.
-7. Jika `selectedCourseId` berisi ID course, `filteredTasks` hanya memuat task milik course tersebut. Saat ini mekanisme filter sudah ada di state, tetapi belum ada kontrol UI untuk memilih course; UI hanya menyediakan tombol untuk membersihkan filter yang aktif.
+7. Dropdown filter mata kuliah mengubah `selectedCourseId`. Jika nilainya berisi ID course, `filteredTasks` hanya memuat task milik course tersebut; nilai kosong menampilkan semua task. Hasil filter yang sama dikirim ke Dasbor, Tabel Tugas, Kanban, dan Kalender.
 
 ## Penyimpanan Data
 
