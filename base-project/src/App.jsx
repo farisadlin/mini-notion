@@ -1,5 +1,4 @@
 import Navbar from "./components/Navbar";
-import { useTranslation } from "react-i18next";
 
 // GUIDES:
 // 6 views: dashboard, table, kanban, calendar, gallery, form -> default-nya "dashboard"
@@ -28,8 +27,6 @@ import { useTranslation } from "react-i18next";
 // 20. Lakukan hal yang sama untuk courses dan notes. Lengkapi semua
 
 export default function App() {
-  const { t } = useTranslation();
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <Navbar />
