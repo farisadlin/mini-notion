@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-function formatDateTime(value) {
+const formatDateTime = (value) => {
   return new Date(value).toLocaleString([], {
     dateStyle: "medium",
     timeStyle: "short",
   });
 }
 
-function GalleryView({ notes, onAdd, onEdit, onDelete }) {
+export default function GalleryView({ notes, onAdd, onEdit, onDelete }) {
   const { t } = useTranslation();
   const [activeNote, setActiveNote] = useState(null);
 
@@ -117,5 +117,3 @@ function GalleryView({ notes, onAdd, onEdit, onDelete }) {
     </section>
   );
 }
-
-export default GalleryView;

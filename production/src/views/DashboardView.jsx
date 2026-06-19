@@ -1,16 +1,16 @@
 import { differenceInHours, isAfter, isBefore } from "date-fns";
 import { useTranslation } from "react-i18next";
 
-function findCourse(courses, courseId) {
+const findCourse = (courses, courseId) => {
   return courses.find((course) => course.id === courseId);
-}
+};
 
-function getCompletionPercent(done, total) {
+const getCompletionPercent = (done, total) => {
   if (total === 0) return 0;
   return Math.round((done / total) * 100);
-}
+};
 
-function DashboardView({ tasks, allTasks, courses }) {
+export default function DashboardView({ tasks, allTasks, courses }) {
   const { t, i18n } = useTranslation();
   const weekday = new Date().toLocaleDateString("en-US", { weekday: "long" });
   const displayWeekday = new Date().toLocaleDateString(
@@ -52,24 +52,26 @@ function DashboardView({ tasks, allTasks, courses }) {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {todayCourses.length ? (
-              todayCourses.map((course) => (
+              todayCourses.map((todayCourse) => (
                 <article
                   className="rounded-md border border-slate-800 bg-slate-950 p-3"
-                  key={course.id}
+                  key={todayCourse.id}
                 >
                   <div className="flex items-center gap-2">
                     <span
                       className="h-2.5 w-2.5 rounded-full"
-                      style={{ backgroundColor: course.color }}
+                      style={{ backgroundColor: todayCourse.color }}
                     />
                     <h4 className="font-medium text-slate-100">
-                      {course.name}
+                      {todayCourse.name}
                     </h4>
                   </div>
                   <p className="mt-2 text-sm text-slate-400">
-                    {course.schedule}
+                    {todayCourse.schedule}
                   </p>
-                  <p className="text-sm text-slate-500">{course.location}</p>
+                  <p className="text-sm text-slate-500">
+                    {todayCourse.location}
+                  </p>
                 </article>
               ))
             ) : (
@@ -86,19 +88,21 @@ function DashboardView({ tasks, allTasks, courses }) {
           </h3>
           <div className="space-y-3">
             {urgentTasks.length ? (
-              urgentTasks.map((task) => {
+              urgentTasks.map((urgentTask) => {
                 const hours = Math.max(
                   0,
-                  differenceInHours(new Date(task.deadline), now),
+                  differenceInHours(new Date(urgentTask.deadline), now),
                 );
-                const course = findCourse(courses, task.courseId);
+                const course = findCourse(courses, urgentTask.courseId);
                 return (
                   <article
                     className={`rounded-md border p-3 ${hours < 6 ? "border-red-500/50 bg-red-500/10" : "border-yellow-400/50 bg-yellow-400/10"}`}
-                    key={task.id}
+                    key={urgentTask.id}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <p className="font-medium text-slate-100">{task.title}</p>
+                      <p className="font-medium text-slate-100">
+                        {urgentTask.title}
+                      </p>
                       <span className="text-xs font-semibold text-slate-200">
                         {t("dashboard.hoursAbbr", { hours })}
                       </span>
@@ -179,6 +183,4 @@ function DashboardView({ tasks, allTasks, courses }) {
       </div>
     </section>
   );
-}
-
-export default DashboardView;
+};

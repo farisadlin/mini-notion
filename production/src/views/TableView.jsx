@@ -1,27 +1,27 @@
 import { useTranslation } from "react-i18next";
 
-function findCourse(courses, courseId) {
+const findCourse = (courses, courseId) => {
   return courses.find((course) => course.id === courseId);
 }
 
-function formatDate(value) {
+const formatDate = (value) => {
   if (!value) return "-";
   return new Date(value).toLocaleDateString();
 }
 
-function getEntityLabel(entity, t) {
+const getEntityLabel = (entity, t) => {
   if (entity === "tasks") return t("entity.tasks");
   if (entity === "courses") return t("entity.coursesShort");
   return t("entity.notes");
 }
 
-function getRows(entity, tasks, courses, notes) {
+const getRows = (entity, tasks, courses, notes) => {
   if (entity === "tasks") return tasks;
   if (entity === "courses") return courses;
   return notes;
 }
 
-function TableView({
+export default function TableView({
   activeEntity,
   tasks,
   courses,
@@ -231,5 +231,3 @@ function TableView({
     </section>
   );
 }
-
-export default TableView;

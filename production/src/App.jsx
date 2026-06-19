@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { arrayMove } from "@dnd-kit/sortable";
 import { useTranslation } from "react-i18next";
 import Navbar from "./components/Navbar";
 import DashboardView from "./views/DashboardView";
@@ -17,7 +16,14 @@ import {
   initialTasks,
 } from "./data/dummyData";
 
-function App() {
+const moveItem = (items, oldIndex, newIndex) => {
+  const reorderedItems = [...items];
+  const [movedItem] = reorderedItems.splice(oldIndex, 1);
+  reorderedItems.splice(newIndex, 0, movedItem);
+  return reorderedItems;
+}
+
+export default function App() {
   const { t } = useTranslation();
   const [activeView, setActiveView] = useState("dashboard");
   const [tableEntity, setTableEntity] = useState("tasks");
@@ -43,7 +49,7 @@ function App() {
     activeView === "calendar" ||
     (activeView === "table" && tableEntity === "tasks");
 
-  function showCreateForm(entity) {
+  const showCreateForm = (entity) => {
     setFormState({
       entity,
       mode: "create",
@@ -53,7 +59,7 @@ function App() {
     setActiveView("form");
   }
 
-  function showEditForm(entity, item) {
+  const showEditForm = (entity, item) => {
     setFormState({
       entity,
       mode: "edit",
@@ -63,7 +69,7 @@ function App() {
     setActiveView("form");
   }
 
-  function closeForm() {
+  const closeForm = () => {
     setActiveView(formState.previousView);
     setFormState({
       entity: null,
@@ -73,56 +79,62 @@ function App() {
     });
   }
 
-  function addTask(values) {
-    setTasks((currentTasks) => [createTask(values), ...currentTasks]);
+  const addTask = (values) => {
+    setTasks((prevTasks) => [createTask(values), ...prevTasks]);
   }
 
-  function addCourse(values) {
-    setCourses((currentCourses) => [createCourse(values), ...currentCourses]);
+  const addCourse = (values) => {
+    setCourses((prevCourses) => [createCourse(values), ...prevCourses]);
   }
 
-  function addNote(values) {
-    setNotes((currentNotes) => [createNote(values), ...currentNotes]);
+  const addNote = (values) => {
+    setNotes((prevNotes) => [createNote(values), ...prevNotes]);
   }
 
-  function updateTask(id, values) {
-    setTasks((currentTasks) => {
-      return currentTasks.map((task) =>
-        task.id === id ? { ...task, ...values } : task,
+  const updateTask = (id, values) => {
+    setTasks((prevTasks) => {
+      return prevTasks.map((currentTask) =>
+        currentTask.id === id ? { ...currentTask, ...values } : currentTask,
       );
     });
   }
 
-  function updateCourse(id, values) {
-    setCourses((currentCourses) => {
-      return currentCourses.map((course) =>
-        course.id === id ? { ...course, ...values } : course,
+  const updateCourse = (id, values) => {
+    setCourses((prevCourses) => {
+      return prevCourses.map((currentCourse) =>
+        currentCourse.id === id
+          ? { ...currentCourse, ...values }
+          : currentCourse,
       );
     });
   }
 
-  function updateNote(id, values) {
-    setNotes((currentNotes) => {
-      return currentNotes.map((note) =>
-        note.id === id ? { ...note, ...values } : note,
+  const updateNote = (id, values) => {
+    setNotes((prevNotes) => {
+      return prevNotes.map((currentNote) =>
+        currentNote.id === id ? { ...currentNote, ...values } : currentNote,
       );
     });
   }
 
-  function deleteTask(id) {
+  const deleteTask = (id) => {
     if (!window.confirm(t("confirm.delete"))) return;
-    setTasks((currentTasks) => currentTasks.filter((task) => task.id !== id));
-  }
-
-  function deleteCourse(id) {
-    if (!window.confirm(t("confirm.delete"))) return;
-
-    setCourses((currentCourses) =>
-      currentCourses.filter((course) => course.id !== id),
+    setTasks((prevTasks) =>
+      prevTasks.filter((currentTask) => currentTask.id !== id),
     );
-    setTasks((currentTasks) =>
-      currentTasks.map((task) =>
-        task.courseId === id ? { ...task, courseId: null } : task,
+  }
+
+  const deleteCourse = (id) => {
+    if (!window.confirm(t("confirm.delete"))) return;
+
+    setCourses((prevCourses) =>
+      prevCourses.filter((prevCourse) => prevCourse.id !== id),
+    );
+    setTasks((prevTasks) =>
+      prevTasks.map((prevTask) =>
+        prevTask.courseId === id
+          ? { ...prevTask, courseId: null }
+          : prevTask,
       ),
     );
 
@@ -131,24 +143,26 @@ function App() {
     }
   }
 
-  function deleteNote(id) {
+  const deleteNote = (id) => {
     if (!window.confirm(t("confirm.delete"))) return;
-    setNotes((currentNotes) => currentNotes.filter((note) => note.id !== id));
+    setNotes((prevNotes) =>
+      prevNotes.filter((currentNote) => currentNote.id !== id),
+    );
   }
 
-  function updateItem(entity, id, values) {
+  const updateItem = (entity, id, values) => {
     if (entity === "tasks") updateTask(id, values);
     if (entity === "courses") updateCourse(id, values);
     if (entity === "notes") updateNote(id, values);
   }
 
-  function deleteItem(entity, id) {
+  const deleteItem = (entity, id) => {
     if (entity === "tasks") deleteTask(id);
     if (entity === "courses") deleteCourse(id);
     if (entity === "notes") deleteNote(id);
   }
 
-  function saveForm(entity, values) {
+  const saveForm = (entity, values) => {
     if (formState.mode === "create") {
       if (entity === "tasks") addTask(values);
       if (entity === "courses") addCourse(values);
@@ -162,20 +176,20 @@ function App() {
     closeForm();
   }
 
-  function reorderTask(activeId, overId) {
-    setTasks((currentTasks) => {
-      const oldIndex = currentTasks.findIndex((task) => task.id === activeId);
-      const newIndex = currentTasks.findIndex((task) => task.id === overId);
+  const reorderTask = (activeId, overId) => {
+    setTasks((prevTasks) => {
+      const oldIndex = prevTasks.findIndex((task) => task.id === activeId);
+      const newIndex = prevTasks.findIndex((task) => task.id === overId);
 
       if (oldIndex === -1 || newIndex === -1) {
-        return currentTasks;
+        return prevTasks;
       }
 
-      return arrayMove(currentTasks, oldIndex, newIndex);
+      return moveItem(prevTasks, oldIndex, newIndex);
     });
   }
 
-  function renderView() {
+  const renderView = () => {
     if (activeView === "form") {
       return (
         <FormView
@@ -278,10 +292,7 @@ function App() {
                   ))}
                 </select>
               </div>
-              <p
-                aria-live="polite"
-                className="text-sm text-slate-400 sm:pb-2"
-              >
+              <p aria-live="polite" className="text-sm text-slate-400 sm:pb-2">
                 {t("filter.tasksVisible", { count: filteredTasks.length })}
               </p>
             </div>
@@ -293,5 +304,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

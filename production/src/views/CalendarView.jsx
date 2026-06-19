@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
-function findCourse(courses, courseId) {
+const findCourse = (courses, courseId) => {
   return courses.find((course) => course.id === courseId);
 }
 
-function getStatusLabelKey(status) {
+const getStatusLabelKey = (status) => {
   if (status === "To Do") return "status.todo";
   if (status === "In Progress") return "status.inProgress";
   return "status.done";
 }
 
-function CalendarView({ tasks, courses, onEdit }) {
+export default function CalendarView({ tasks, courses, onEdit }) {
   const { t, i18n } = useTranslation();
   const locale = i18n.language === "id" ? "id-ID" : "en-US";
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -235,5 +235,3 @@ function CalendarView({ tasks, courses, onEdit }) {
     </section>
   );
 }
-
-export default CalendarView;

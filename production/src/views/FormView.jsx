@@ -5,7 +5,7 @@ import { STATUS_LABELS, STATUS_OPTIONS, TAG_PALETTE } from "../constants";
 const inputClass =
   "w-full rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-sky-400";
 
-function Field({ label, children, fullWidth = false }) {
+const Field = ({ label, children, fullWidth = false }) => {
   return (
     <label className={`block space-y-1 ${fullWidth ? "sm:col-span-2" : ""}`}>
       <span className="text-xs font-medium uppercase tracking-wide text-slate-400">
@@ -16,7 +16,7 @@ function Field({ label, children, fullWidth = false }) {
   );
 }
 
-function getEmptyForm(entity) {
+const getEmptyForm = (entity) => {
   if (entity === "tasks") {
     return {
       title: "",
@@ -43,7 +43,7 @@ function getEmptyForm(entity) {
   };
 }
 
-function getFormFromItem(entity, item) {
+const getFormFromItem = (entity, item) => {
   if (!item) {
     return getEmptyForm(entity);
   }
@@ -78,7 +78,7 @@ function getFormFromItem(entity, item) {
   };
 }
 
-function buildSavedItem(entity, formData) {
+const buildSavedItem = (entity, formData) => {
   if (entity === "tasks") {
     return {
       title: formData.title,
@@ -107,13 +107,20 @@ function buildSavedItem(entity, formData) {
   };
 }
 
-function getEntityName(entity, t) {
+const getEntityName = (entity, t) => {
   if (entity === "tasks") return t("entity.tasks");
   if (entity === "courses") return t("entity.courses");
   return t("entity.notes");
 }
 
-function FormView({ entity, mode, item, courses = [], onSave, onCancel }) {
+export default function FormView({
+  entity,
+  mode,
+  item,
+  courses = [],
+  onSave,
+  onCancel,
+}) {
   const { t } = useTranslation();
   const [formData, setFormData] = useState(() => getFormFromItem(entity, item));
   const [newTagName, setNewTagName] = useState("");
@@ -125,14 +132,14 @@ function FormView({ entity, mode, item, courses = [], onSave, onCancel }) {
   }, [entity, item]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  function updateField(field, value) {
-    setFormData((currentData) => ({
-      ...currentData,
+  const updateField = (field, value) => {
+    setFormData((prevData) => ({
+      ...prevData,
       [field]: value,
     }));
   }
 
-  function addTag() {
+  const addTag = () => {
     const name = newTagName.trim();
     if (!name) return;
 
@@ -145,14 +152,14 @@ function FormView({ entity, mode, item, courses = [], onSave, onCancel }) {
     setNewTagName("");
   }
 
-  function removeTag(indexToRemove) {
+  const removeTag = (indexToRemove) => {
     updateField(
       "tags",
       formData.tags.filter((_, index) => index !== indexToRemove)
     );
   }
 
-  function updateTagColor(indexToUpdate, color) {
+  const updateTagColor = (indexToUpdate, color) => {
     const nextTags = formData.tags.map((tag, index) => {
       if (index !== indexToUpdate) return tag;
       return { ...tag, color };
@@ -161,7 +168,7 @@ function FormView({ entity, mode, item, courses = [], onSave, onCancel }) {
     updateField("tags", nextTags);
   }
 
-  function handleSubmit(event) {
+  const handleSubmit = (event) => {
     event.preventDefault();
     onSave(entity, buildSavedItem(entity, formData));
   }
@@ -383,5 +390,3 @@ function FormView({ entity, mode, item, courses = [], onSave, onCancel }) {
     </div>
   );
 }
-
-export default FormView;

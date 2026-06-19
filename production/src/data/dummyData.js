@@ -2,7 +2,7 @@ import { TAG_PALETTE } from "../constants";
 
 const today = new Date();
 
-function isoDate(offsetDays = 0, hours = 9) {
+const isoDate = (offsetDays = 0, hours = 9) => {
   const date = new Date(today);
   date.setDate(date.getDate() + offsetDays);
   date.setHours(hours, 0, 0, 0);
@@ -131,11 +131,11 @@ export const initialNotes = [
   },
 ];
 
-export function makeId(prefix) {
+export const makeId = (prefix) => {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
-export function makeTags(value) {
+export const makeTags = (value) => {
   if (Array.isArray(value)) {
     return value;
   }
@@ -149,7 +149,7 @@ export function makeTags(value) {
     .filter((tag) => tag.name);
 }
 
-export function createTask(values) {
+export const createTask = (values) => {
   const now = new Date().toISOString();
 
   return {
@@ -162,7 +162,7 @@ export function createTask(values) {
   };
 }
 
-export function createCourse(values) {
+export const createCourse = (values) => {
   return {
     id: makeId("course"),
     name: values.name || "Mata kuliah tanpa judul",
@@ -173,7 +173,7 @@ export function createCourse(values) {
   };
 }
 
-export function createNote(values) {
+export const createNote = (values) => {
   const now = new Date().toISOString();
 
   return {
